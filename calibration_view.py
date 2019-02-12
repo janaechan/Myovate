@@ -1,5 +1,6 @@
 from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
+from kivy.uix.floatlayout import FloatLayout
 
 
 class CalibrationView:
@@ -9,7 +10,6 @@ class CalibrationView:
 
 
     def build(self):
-
+        layout_main = FloatLayout()
         calibration_title = 'Calibration'
-
         add_sensor_button = Button(text='Add Sensor', font_size='30sp')

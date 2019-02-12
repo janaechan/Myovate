@@ -9,6 +9,13 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.metrics import dp
 from kivy.base import runTouchApp
 
+from kivy.lang import Builder
+from kivy.uix.screenmanager import ScreenManager, Screen
+
+
+class CalibrationScreen(Screen):
+    pass
+
 
 class MainScreen:
 
@@ -35,6 +42,7 @@ class MainScreen:
 
         progress_button = Button(text='Progress', size_hint_y=None, height=150)
         progress_button.bind(on_release=lambda btn: self.drop_down_menu.select(myovate_menu_text))
+        calibration_button.on_press()
 
         # Add buttons to layout
         self.drop_down_menu.add_widget(calibration_button)
@@ -46,11 +54,14 @@ class MainScreen:
         self.drop_down_menu.bind(on_select=lambda instance, x: setattr(menu_button,'text', x))
         layout_drop.add_widget(menu_button)
 
-        #Add to main layout
+        # Add to main layout
         layout_main.add_widget(layout_drop)
         layout_main.add_widget(layout_myovate)
 
-        return runTouchApp(layout_main)
+        return layout_main, self.drop_down_menu
+        # return runTouchApp(layout_main)
 
 
+# screen_manager = ScreenManager()
+# screen_manager.add_widget(CalibrationScreen(name='calibration_screen'))
 
