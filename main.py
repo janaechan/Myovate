@@ -10,8 +10,8 @@ import ScreenManager
 class Myovate(App):
 
     def build(self):
-        # return view.MainScreen().build()
-        return ScreenManager.Screens().run()
+        return view.MainScreen().build()
+        # return ScreenManager.Screens().run()
 
 
 if __name__ == '__main__':

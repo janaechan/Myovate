@@ -13,10 +13,6 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 
 
-class CalibrationScreen(Screen):
-    pass
-
-
 class MainScreen:
 
     def __init__(self):
@@ -58,8 +54,8 @@ class MainScreen:
         layout_main.add_widget(layout_drop)
         layout_main.add_widget(layout_myovate)
 
-        return layout_main, self.drop_down_menu
-        # return runTouchApp(layout_main)
+        # return layout_main, self.drop_down_menu
+        return runTouchApp(layout_main)
 
 
 # screen_manager = ScreenManager()
