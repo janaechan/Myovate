@@ -1,0 +1,67 @@
+<SensorScreen>:
+    FloatLayout:
+        AnchorLayout:
+            anchor_x:'center'
+            anchor_y:'center'
+
+            Label:
+                text:"Step 1: Place the red sensor on the targeted muscle"
+
+            Label:
+                text:"Step 2: Place the black sensor on a nearby bone"
+        AnchorLayout:
+            anchor_x:'left'
+            anchor_y:'bottom'
+
+            Button:
+                text:'Next'
+                on_press: root.manager.current = 'relax'
+
+<RelaxScreen>:
+    FloatLayout:
+        AnchorLayout:
+            anchor_x:'top'
+            anchor_y:'center'
+
+            Label:
+                text:"Relax and wait until the progress is finished"
+
+        AnchorLayout:
+            anchor_x:"center"
+            anchor_y:"center"
+
+            CircularProgressBar:
+
+        AnchorLayout:
+            anchor_x:'left'
+            anchor_y:'bottom'
+
+            Button:
+                text:'Next'
+                on_press: root.manager.current = 'contract'
+
+<ContractScreen>:
+    FloatLayout:
+        AnchorLayout:
+            anchor_x:'top'
+            anchor_y:'center'
+
+            Label:
+                text:"Contract targeted muscle as much as possible and wait until the progress is finished"
+
+        AnchorLayout:
+            anchor_x:"center"
+            anchor_y:"center"
+
+            CircularProgressBar:
+
+        AnchorLayout:
+            anchor_x:'left'
+            anchor_y:'bottom'
+
+            Button:
+                text:'Next'
+                on_press: root.manager.current = 'contract'
+
+
+
