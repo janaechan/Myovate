@@ -1,0 +1,368 @@
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+#:import Factory kivy.factory.Factory
+
+<Row@BoxLayout>:
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    value: ''
+    sensor_loc: ''
+    BoxLayout:
+        orientation: 'horizontal'
+        Label:
+            text: root.value
+        Label:
+            text: root.sensor_loc
+        Button:
+            text: "Edit Sensor"
+    Image:
+        source: 'ever-lane.png'
+
+
+<ProgressRow@BoxLayout>:
+    canvas.before:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    value: ''
+    Label:
+        text: root.value
+
+ScreenManagement:
+    transition: NoTransition()
+    MainScreen:
+        id: main
+        name: "main"
+    StartSessionScreen:
+        id: start_session
+        name: "start_session"
+    RunningSessionScreen:
+        id: running_session
+        name: "running_session"
+    ProgressScreen:
+        id: progress
+        name: "progress"
+
+<DropDownMenu>:
+    Button:
+        on_release: app.root.current = "main"
+        on_press: app.root.drop_down.dismiss()
+        text: "Back Home"
+        size_hint_y: None
+        size_y: 48
+
+    Button:
+        on_release: app.root.current = "progress"
+        on_press: app.root.drop_down.dismiss()
+        text: "Progress Report"
+        size_hint_y: None
+        size_y: 48
+
+    Button:
+        on_release: app.root.current = "start_session"
+        on_press: app.root.drop_down.dismiss()
+        text: "Start Session"
+        size_hint_y: None
+        size_y: 48
+
+    Button:
+        on_release: app.root.current = "running_session"
+        on_press: app.root.drop_down.dismiss()
+        text: "Current Session"
+        size_hint_y: None
+        size_y: 48
+
+<CalibrationSetupPopup>:
+    id: calibration_setup_pop
+    size_hint: 0.6, 0.6
+    auto_dismiss: False
+    FloatLayout:
+        Label:
+            text:"Step 1: Place the red sensor on the targeted muscle"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+        Label:
+            text:"Step 2: Place the black sensor on a nearby bone"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+
+        Button:
+            pos: self.parent.pos
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Click here to dismiss'
+            on_press:
+                calibration_setup_pop.dismiss()
+                print(self.parent.pos[0])
+        Button:
+            pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Next'
+            on_press:
+                calibration_setup_pop.dismiss()
+                Factory.CalibrationRelaxPopup().open()
+
+
+<CalibrationRelaxPopup>:
+    id: calibration_relax_pop
+    cp: cp
+    size_hint: 0.6, 0.6
+    auto_dismiss: False
+    on_open: root.puopen()
+    FloatLayout:
+        Label:
+            text: "Please relax your muscle until progress bar full."
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+        Label:
+            text: "Calibration in progress ..."
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+        ProgressBar:
+            id: cp
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            max: 100
+            value: 75
+
+
+        Button:
+            pos: self.parent.pos
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Click here to dismiss'
+            on_press:
+                calibration_relax_pop.dismiss()
+                print(self.parent.pos[0])
+        Button:
+            pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Next'
+            on_press:
+                calibration_relax_pop.dismiss()
+                Factory.CalibrationContractPopup().open()
+
+<CalibrationContractPopup>:
+    id: calibration_contract_pop
+    cp: cp
+    size_hint: 0.6, 0.6
+    auto_dismiss: False
+    on_open: root.puopen()
+    FloatLayout:
+        Label:
+            text: "Contract targeted muscle as much as possible and wait until\nthe progress bar is filled"
+            halign: "center"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+        Label:
+            text: "Calibration in progress ..."
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+        ProgressBar:
+            id: cp
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            max: 100
+            value: 75
+
+        Button:
+            pos: self.parent.pos
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Click here to dismiss'
+            on_press: calibration_contract_pop.dismiss()
+        Button:
+            pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Next'
+            on_press:
+                calibration_contract_pop.dismiss()
+                Factory.CalibrationCompletePopup().open()
+
+<CalibrationCompletePopup>:
+    id: calibration_complete_pop
+    size_hint: 0.6, 0.6
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: "Calibration Complete. Session ready to begin."
+        Button:
+            text: 'Begin Session'
+            on_press:
+                calibration_complete_pop.dismiss()
+
+<AddSensorPopup>:
+    id: add_sensor_pop
+    size_hint: 0.6, 0.6
+    auto_dismiss: False
+    title: 'Hello world!!'
+    FloatLayout:
+        BoxLayout:
+            pos: self.parent.pos
+            size_hint_y : 0.5
+            orientation: 'horizontal'
+            Label:
+                text: "Sensor Name"
+            TextInput:
+                id: sensor_name_input
+        Button:
+            pos: self.parent.pos
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Click here to dismiss'
+            on_press:
+                add_sensor_pop.dismiss()
+                print(self.parent.pos[0])
+        Button:
+            pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Calibrate Sensor'
+            on_press:
+                add_sensor_pop.dismiss()
+                Factory.CalibrationSetupPopup().open()
+
+<MainScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            id: btn
+            text: 'Menu'
+            on_release: app.root.drop_down.open(self)
+            size_hint_y: None
+            height: '48dp'
+        Label:
+            text: "[b] MYOVATE [/b]"
+            font_size: min(root.height, root.width) / 10
+            markup: True
+            size_hint_y: 0.3
+
+<StartSessionScreen>:
+    rv: rv
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            id: btn
+            text: 'Menu'
+            on_release: app.root.drop_down.open(self)
+            size_hint_y: None
+            height: '48dp'
+
+        BoxLayout:
+            size_hint_y : 0.5
+            orientation: 'horizontal'
+            Label:
+                text: "Session Name"
+            TextInput:
+                id: session_name_input
+        Button:
+            size_hint_y : 0.5
+            text: 'Add New Sensor'
+            on_press: root.insert(new_item_input.text, sensor_loc_input.text)
+            on_release: root.add_sensor_popup.open()
+        BoxLayout:
+            orientation: 'vertical'
+            BoxLayout:
+                size_hint_y : 0.5
+                orientation: 'horizontal'
+                Label:
+                    text: "Sensor Name"
+                    size_hint_y : 0.5
+                TextInput:
+                    id: new_item_input
+                    size_hint_y : 0.5
+            BoxLayout:
+                size_hint_y : 0.5
+                orientation: 'horizontal'
+                Label:
+                    text: "Sensor Location"
+                    size_hint_y : 0.5
+                TextInput:
+                    id: sensor_loc_input
+                    size_hint_y : 0.5
+        RecycleView:
+            id: rv
+            scroll_type: ['bars', 'content']
+            scroll_wheel_distance: dp(114)
+            bar_width: dp(10)
+            viewclass: 'Row'
+            RecycleBoxLayout:
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: dp(2)
+        Button:
+            text: "Save Session"
+            size_hint_y : 0.5
+            on_press: root.manager.get_screen('progress').insert(session_name_input.text)
+
+<RunningSessionScreen>:
+    rv: rv
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            id: btn
+            text: 'Menu'
+            on_release: app.root.drop_down.open(self)
+            size_hint_y: None
+            height: '48dp'
+
+        Button:
+            size_hint_y : 0.5
+            text: 'Session Name'
+            on_press: root.manager.get_screen('progress').insert(session_name_input.text)
+        BoxLayout:
+            size_hint_y : 0.5
+            orientation: 'horizontal'
+            Label:
+                text: "Session Name"
+            TextInput:
+                id: session_name_input
+        Label:
+            text: 'Active Sensors'
+        RecycleView:
+            id: rv
+            scroll_type: ['bars', 'content']
+            scroll_wheel_distance: dp(114)
+            bar_width: dp(10)
+            viewclass: 'Row'
+            RecycleBoxLayout:
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: dp(2)
+
+<ProgressScreen>:
+    rv_progress: rv_progress
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            id: btn
+            text: 'Menu'
+            on_release: app.root.drop_down.open(self)
+            size_hint_y: None
+            height: '48dp'
+        Button:
+            on_release: root.print_log()
+            text: "PRINT PROGRESS LOG"
+            font_size: 20
+
+        RecycleView:
+            id: rv_progress
+            scroll_type: ['bars', 'content']
+            scroll_wheel_distance: dp(114)
+            bar_width: dp(10)
+            viewclass: 'ProgressRow'
+            RecycleBoxLayout:
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: dp(2)
