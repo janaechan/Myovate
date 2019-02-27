@@ -1,26 +1,67 @@
 #: import NoTransition kivy.uix.screenmanager.NoTransition
 #:import Factory kivy.factory.Factory
 
-<Row@BoxLayout>:
+<Row>:
+    id: row
     orientation: 'vertical'
     canvas.before:
         Color:
-            rgba: 0.5, 0.5, 0.5, 1
+            rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
         Rectangle:
             size: self.size
             pos: self.pos
-    value: ''
+    sensor_name: ''
     sensor_loc: ''
+    but_mapping: ''
+
     BoxLayout:
         orientation: 'horizontal'
         Label:
-            text: root.value
-        Label:
-            text: root.sensor_loc
+            text: 'Sensor Name: ' + root.sensor_name
+            size_hint: [1, .2]
+        Button:
+            text: "Remove Sensor"
+            size_hint: [0.5, .2]
+            on_press:
+                root.remove(root)
+                Factory.ConfirmDeletePopup().open()
+
         Button:
             text: "Edit Sensor"
-    Image:
-        source: 'ever-lane.png'
+            size_hint: [0.5, .2]
+            on_press:
+                Factory.AddSensorPopup(root).open()
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint: [1, .2]
+        Label:
+            text: 'Sensor Location: ' + root.sensor_loc
+        Label:
+            text: 'Mapped to: ' + root.but_mapping
+
+    BoxLayout:
+        Graph:
+            id: graph
+            xlabel: ""
+            ylabel: "Level"
+            x_ticks_minor:5
+            x_tics_major:25
+            y_ticks_major:50
+            x_grid: True
+            y_grid: True
+            padding: 5
+            pos: root.pos
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: [0.5, .5]
+            Button:
+                text: "START"
+                bold: True
+                on_press: root.start()
+            Button:
+                text: "STOP"
+                bold: True
+                on_press: root.stop()
 
 
 <ProgressRow@BoxLayout>:
@@ -189,7 +230,7 @@ ScreenManagement:
         Label:
             text: "Calibration Complete. Session ready to begin."
         Button:
-            text: 'Begin Session'
+            text: 'Exit'
             on_press:
                 calibration_complete_pop.dismiss()
 
@@ -197,24 +238,88 @@ ScreenManagement:
     id: add_sensor_pop
     size_hint: 0.6, 0.6
     auto_dismiss: False
-    title: 'Hello world!!'
+    title: ''
+    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
+    on_open:
+        print("Sensor Name box pos: ")
+        print(sensor_name_box.pos)
+        print("dismiss button pos:")
+        print(dismiss_but.pos)
     FloatLayout:
         BoxLayout:
-            pos: self.parent.pos
-            size_hint_y : 0.5
+            id: sensor_name_box
             orientation: 'horizontal'
+            pos: (self.parent.pos[0], 400)
+
             Label:
+                id: sensor_name_id
                 text: "Sensor Name"
+                height: self.texture_size[1] + dp(10)
+                width: self.parent.width/4 + dp(10)
+                size_hint: None, None
             TextInput:
                 id: sensor_name_input
+                text: root.rv_data[root.index]['sensor_name'] if root.rv_data else ''
+                height: self.minimum_height
+                width: self.parent.width - sensor_name_id.width
+                size_hint: None, None
+        BoxLayout:
+            id: date_box
+            orientation: 'horizontal'
+            pos: (self.parent.pos[0], sensor_name_box.pos[1] - sensor_name_id.height - dp(10))
+            Label:
+                id: date_id
+                text: "Date"
+                height: self.texture_size[1] + dp(10)
+                width: self.parent.width/4 + dp(10)
+                size_hint: None, None
+            TextInput:
+                id: date_input
+                text: root.rv_data[root.index]['sensor_name'] if root.rv_data else root.date
+                height: self.minimum_height
+                width: self.parent.width - date_id.width
+                size_hint: None, None
+        BoxLayout:
+            id: sensor_loc_box
+            orientation: 'horizontal'
+            pos: (self.parent.pos[0], date_box.pos[1] - date_id.height - dp(10))
+            Label:
+                id: sensor_loc_id
+                text: "Sensor Location"
+                height: self.texture_size[1] + dp(10)
+                width: self.parent.width/4 + dp(10)
+                size_hint: None, None
+            TextInput:
+                id: sensor_loc_input
+                text: root.rv_data[root.index]['sensor_loc'] if root.rv_data else ''
+                height: self.minimum_height
+                width: self.parent.width - sensor_loc_id.width
+                size_hint: None, None
+        BoxLayout:
+            id: but_map_box
+            orientation: 'horizontal'
+            pos: (self.parent.pos[0], sensor_loc_box.pos[1] - sensor_loc_id.height - dp(10))
+            Label:
+                id: but_mapping_id
+                text: "Map to: "
+                height: self.texture_size[1] + dp(10)
+                width: self.parent.width/4 + dp(10)
+                size_hint: None, None
+            TextInput:
+                id: but_mapping_input
+                text: root.rv_data[root.index]['but_mapping'] if root.rv_data else ''
+                height: self.minimum_height
+                width: self.parent.width - but_mapping_id.width
+                size_hint: None, None
         Button:
+            id: dismiss_but
             pos: self.parent.pos
             size: self.parent.width/2, self.parent.height/5
             size_hint: None, None
             text: 'Click here to dismiss'
             on_press:
                 add_sensor_pop.dismiss()
-                print(self.parent.pos[0])
+                print(sensor_name_box.pos)
         Button:
             pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
             size: self.parent.width/2, self.parent.height/5
@@ -222,8 +327,35 @@ ScreenManagement:
             text: 'Calibrate Sensor'
             on_press:
                 add_sensor_pop.dismiss()
+                app.root.get_screen('start_session').insert(sensor_name_input.text, sensor_loc_input.text, but_mapping_input.text)
                 Factory.CalibrationSetupPopup().open()
 
+<ConfirmDeletePopup>:
+    id: confirm_delete_popup
+    size_hint: 0.6, 0.6
+    auto_dismiss: False
+    title: ''
+    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
+    FloatLayout:
+        Label:
+            text: "Confirm removing sensor:"
+            halign: "center"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+        Button:
+            pos: self.parent.pos
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Yes'
+            on_press:
+                confirm_delete_popup.dismiss()
+        Button:
+            pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'No'
+            on_press:
+                confirm_delete_popup.dismiss()
 <MainScreen>:
     BoxLayout:
         orientation: 'vertical'
@@ -243,100 +375,88 @@ ScreenManagement:
     rv: rv
     BoxLayout:
         orientation: 'vertical'
+
         Button:
             id: btn
             text: 'Menu'
             on_release: app.root.drop_down.open(self)
             size_hint_y: None
             height: '48dp'
-
+        Label:
+            text: 'Complete all boxes to start a session.'
+            size_hint_y: None
+            height: '60dp'
         BoxLayout:
-            size_hint_y : 0.5
+            id: session_name_box
             orientation: 'horizontal'
+            #size_hint_y: None
+            #height: '48dp'
+            size_hint: [1, 0.2]
             Label:
+                id: session_name_id
                 text: "Session Name"
+                height: self.texture_size[1] + dp(10)
+                width: self.parent.width/4 + dp(10)
+                size_hint: None, None
             TextInput:
                 id: session_name_input
-        Button:
-            size_hint_y : 0.5
-            text: 'Add New Sensor'
-            on_press: root.insert(new_item_input.text, sensor_loc_input.text)
-            on_release: root.add_sensor_popup.open()
+                height: self.minimum_height
+                width: self.parent.width - session_name_id.width
+                size_hint: None, None
         BoxLayout:
-            orientation: 'vertical'
-            BoxLayout:
-                size_hint_y : 0.5
-                orientation: 'horizontal'
-                Label:
-                    text: "Sensor Name"
-                    size_hint_y : 0.5
-                TextInput:
-                    id: new_item_input
-                    size_hint_y : 0.5
-            BoxLayout:
-                size_hint_y : 0.5
-                orientation: 'horizontal'
-                Label:
-                    text: "Sensor Location"
-                    size_hint_y : 0.5
-                TextInput:
-                    id: sensor_loc_input
-                    size_hint_y : 0.5
+            id: session_date_box
+            orientation: 'horizontal'
+            size_hint: [1, 0.2]
+            Label:
+                id: session_date_id
+                text: "Date"
+                height: self.texture_size[1] + dp(10)
+                width: self.parent.width/4 + dp(10)
+                size_hint: None, None
+            TextInput:
+                id: session_date_input
+                text: root.session_date
+                height: self.minimum_height
+                width: self.parent.width - session_date_id.width
+                size_hint: None, None
+        Button:
+            text: 'Add New Sensor'
+            size_hint_y: None
+            height: '48dp'
+            # on_press: root.insert(new_item_input.text, sensor_loc_input.text)
+            on_release: root.add_sensor_popup.open()
+
         RecycleView:
             id: rv
             scroll_type: ['bars', 'content']
             scroll_wheel_distance: dp(114)
             bar_width: dp(10)
             viewclass: 'Row'
-            RecycleBoxLayout:
-                default_size: None, dp(56)
+            SelectableRecycleBoxLayout:
+                default_size: None, dp(150)
                 default_size_hint: 1, None
                 size_hint_y: None
                 height: self.minimum_height
                 orientation: 'vertical'
-                spacing: dp(2)
+                spacing: dp(20)
+                touch_multiselect: True
         Button:
             text: "Save Session"
-            size_hint_y : 0.5
-            on_press: root.manager.get_screen('progress').insert(session_name_input.text)
+            size_hint_y: None
+            height: '48dp'
+            on_press: root.manager.get_screen('progress').insert(session_name_input.text, rv.data)
 
 <RunningSessionScreen>:
-    rv: rv
-    BoxLayout:
-        orientation: 'vertical'
+    FloatLayout:
         Button:
             id: btn
             text: 'Menu'
             on_release: app.root.drop_down.open(self)
-            size_hint_y: None
-            height: '48dp'
-
-        Button:
-            size_hint_y : 0.5
-            text: 'Session Name'
-            on_press: root.manager.get_screen('progress').insert(session_name_input.text)
-        BoxLayout:
-            size_hint_y : 0.5
-            orientation: 'horizontal'
-            Label:
-                text: "Session Name"
-            TextInput:
-                id: session_name_input
+            size_hint:1,0.075
+            pos_hint:{"left":1,"top":1}
         Label:
-            text: 'Active Sensors'
-        RecycleView:
-            id: rv
-            scroll_type: ['bars', 'content']
-            scroll_wheel_distance: dp(114)
-            bar_width: dp(10)
-            viewclass: 'Row'
-            RecycleBoxLayout:
-                default_size: None, dp(56)
-                default_size_hint: 1, None
-                size_hint_y: None
-                height: self.minimum_height
-                orientation: 'vertical'
-                spacing: dp(2)
+            text: 'Current Running Session'
+            pos_hint: {"center_x":0.5,"center_y":0.9}
 
 <ProgressScreen>:
     rv_progress: rv_progress
@@ -358,8 +478,8 @@ ScreenManagement:
             scroll_type: ['bars', 'content']
             scroll_wheel_distance: dp(114)
             bar_width: dp(10)
-            viewclass: 'ProgressRow'
-            RecycleBoxLayout:
+            viewclass: 'Row'
+            SelectableRecycleBoxLayout:
                 default_size: None, dp(56)
                 default_size_hint: 1, None
                 size_hint_y: None
