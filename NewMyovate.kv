@@ -154,19 +154,21 @@ ScreenManagement:
     cp: cp
     size_hint: 0.6, 0.6
     auto_dismiss: False
+    r_cal: relax_calibration
     on_open: root.puopen()
     FloatLayout:
         Label:
             text: "Please relax your muscle until progress bar full."
             pos_hint: {'center_x': 0.5, 'center_y': 0.7}
         Label:
+            id: relax_calibration
             text: "Calibration in progress ..."
             pos_hint: {'center_x': 0.5, 'center_y': 0.6}
         ProgressBar:
             id: cp
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
             max: 100
-            value: 75
+            value: 0
 
 
         Button:
@@ -190,6 +192,7 @@ ScreenManagement:
     id: calibration_contract_pop
     cp: cp
     size_hint: 0.6, 0.6
+    c_cal: contract_calibration
     auto_dismiss: False
     on_open: root.puopen()
     FloatLayout:
@@ -198,13 +201,14 @@ ScreenManagement:
             halign: "center"
             pos_hint: {'center_x': 0.5, 'center_y': 0.7}
         Label:
+            id: contract_calibration
             text: "Calibration in progress ..."
             pos_hint: {'center_x': 0.5, 'center_y': 0.6}
         ProgressBar:
             id: cp
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
             max: 100
-            value: 75
+            value: 0
 
         Button:
             pos: self.parent.pos
@@ -285,7 +289,7 @@ ScreenManagement:
             pos: (self.parent.pos[0], date_box.pos[1] - date_id.height - dp(10))
             Label:
                 id: sensor_loc_id
-                text: "Sensor Location"
+                text: "Sensor Muscle Location"
                 height: self.texture_size[1] + dp(10)
                 width: self.parent.width/4 + dp(10)
                 size_hint: None, None
@@ -307,6 +311,22 @@ ScreenManagement:
                 size_hint: None, None
             TextInput:
                 id: but_mapping_input
+                text: root.rv_data[root.index]['but_mapping'] if root.rv_data else ''
+                height: self.minimum_height
+                width: self.parent.width - but_mapping_id.width
+                size_hint: None, None
+        BoxLayout:
+            id: but_map_box
+            orientation: 'horizontal'
+            pos: (self.parent.pos[0], sensor_loc_box.pos[1] - sensor_loc_id.height - dp(10))
+            Label:
+                id: channel_id
+                text: "Sensor Channel: "
+                height: self.texture_size[1] + dp(10)
+                width: self.parent.width/4 + dp(10)
+                size_hint: None, None
+            TextInput:
+                id: channel_input
                 text: root.rv_data[root.index]['but_mapping'] if root.rv_data else ''
                 height: self.minimum_height
                 width: self.parent.width - but_mapping_id.width
@@ -486,3 +506,4 @@ ScreenManagement:
                 height: self.minimum_height
                 orientation: 'vertical'
                 spacing: dp(2)
+

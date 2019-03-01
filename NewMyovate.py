@@ -17,6 +17,8 @@ from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 import datetime
+import time
+from kivy.core.window import Window
 
 from kivy.garden.graph import MeshLinePlot
 from threading import Thread
@@ -133,10 +135,13 @@ class CalibrationRelaxPopup(Popup):
         Clock.schedule_once(self.progress_bar_start)
 
     def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
+
         self.cp.value = 1  # Initial value of progress_bar
 
     def next(self, dt):  # Updates Project Bar
         if self.cp.value >= 100:  # Checks to see if progress_bar.value has met 100
+            time.sleep(1)
+            self.r_cal.text = 'Current Calibration Complete'
             return False  # Returning False schedule is canceled and won't repeat
         self.cp.value += 1  # Updates progress_bar's progress
 
@@ -157,6 +162,8 @@ class CalibrationContractPopup(Popup):
 
     def next(self, dt):  # Updates Project Bar
         if self.cp.value >= 100:  # Checks to see if progress_bar.value has met 100
+            time.sleep(1)
+            self.c_cal.text = 'Current Calibration Complete'
             return False  # Returning False schedule is canceled and won't repeat
         self.cp.value += 1  # Updates progress_bar's progress
 
@@ -208,6 +215,7 @@ class ProgressScreen(Screen):
         print(self.rv_progress.data)
 
 
+
 class ScreenManagement(ScreenManager):
     def __init__(self, **kwargs):
         super(ScreenManagement, self).__init__(**kwargs)
@@ -224,8 +232,9 @@ class MyvoateApp(App):
 
 if __name__ == '__main__':
     levels = []  # store levels of microphone
+
     get_level_thread = Thread(target=get_microphone_level)
     get_level_thread.daemon = True
     get_level_thread.start()
-
+    Window.fullscreen = 'auto'
     MyvoateApp().run()
