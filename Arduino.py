@@ -12,6 +12,7 @@ class Arduino():
         self.cal = {}
         self.ser = None
         self.arduino_ports = None
+        self.button_info = {}
 
     def find_arduino(self):
         self.arduino_ports = [
@@ -29,7 +30,7 @@ class Arduino():
         final_data = []
         while len(final_data) < self.data_points:
             data = self.arduino.readline().split(',')
-            final_data.append(data[channel_num])
+            final_data.append(int(data[channel_num]))
         final_data.sort()
         low_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num] = [low_cal]
@@ -39,15 +40,19 @@ class Arduino():
         final_data = []
         while len(final_data) < self.data_points:
             data = self.arduino.readline().split(',')
-            final_data.append(data[channel_num])
+            final_data.append(int(data[channel_num]))
         final_data.sort()
         high_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num].append(high_cal)
-        self.arduino.write(str(channel_num) + "," + str(self.cal[channel_num[0]]) + "," + str(high_cal))
+        self.arduino.write('py,' + str(channel_num) + "," + str(self.cal[channel_num[0]]) + "," + str(high_cal))
         return high_cal
 
+    def button_map(self, channel_num, button):
+        self.button_info[channel_num] = button
+        self.arduino.write('py,' + str(channel_num) + "," + str(button))
+
     def test_comm(self):
-        self.arduino.write('4')
+        self.arduino.write('400')
         print(self.arduino.readline())
 
     if __name__ == '__main__':
