@@ -52,7 +52,7 @@ class Arduino():
         self.arduino.write('py,' + str(channel_num) + "," + str(button))
 
     def test_comm(self):
-        self.arduino.write('400')
+        self.arduino.write('py,400')
         print(self.arduino.readline())
 
     if __name__ == '__main__':
