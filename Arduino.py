@@ -2,6 +2,7 @@ import serial
 import warnings
 import serial.tools.list_ports
 
+
 class Arduino():
 
     def __init__(self):
@@ -13,6 +14,13 @@ class Arduino():
         self.ser = None
         self.arduino_ports = None
         self.button_info = {}
+        self.button_code = {
+
+            'KEY_DOWN_ARROW': 217,
+            'KEY_UP_ARROW':216,
+            'KEY_LEFT_ARROW':215,
+            'KEY_RIGHT_ARROW':214
+        }
 
     def find_arduino(self):
         self.arduino_ports = [
@@ -52,15 +60,15 @@ class Arduino():
         self.arduino.write('py,' + str(channel_num) + "," + str(button))
 
     def test_comm(self):
-        self.arduino.write('py,400')
+        self.arduino.write('py,400,200')
         print(self.arduino.readline())
 
     if __name__ == '__main__':
         all_ar = find_arduino()
-        if (len(all_ar) < 1):
+        if len(all_ar) < 1:
             print("No Arduino found")
         else:
-            if (len(all_ar) > 1):
+            if len(all_ar) > 1:
                 print("Multiple Arduino")
             set_arduino(all_ar[0])
             test_comm()
