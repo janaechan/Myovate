@@ -1,0 +1,191 @@
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+#:import Factory kivy.factory.Factory
+
+
+ScreenManagement:
+    transition: NoTransition()
+    JournalScreen:
+        id: journal
+        name: "journal"
+
+
+<JournalScreen>:
+    rv : rv
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'top'
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            Label:
+                text: 'My Journal'
+                size_hint: 1, 0.1
+
+            Button:
+                text: 'Add Journal Entry'
+                size_hint: 1, 0.1
+                on_press: Factory.AddJournalPopup().open()
+
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint: 1, 0.1
+                Label:
+                    text: "Date"
+                Label:
+                    text: "Journal Title"
+                Label:
+                    text: "Edit Journal Entry"
+
+            RecycleView:
+                id: rv
+                scroll_type: ['bars', 'content']
+                scroll_wheel_distance: dp(114)
+                bar_width: dp(10)
+                viewclass: 'JournalEntry'
+                SelectableRecycleBoxLayout:
+                    default_size: None, dp(150)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(20)
+                    touch_multiselect: True
+
+<JournalEntry>:
+    id: journal_entry
+    orientation: 'vertical'
+    journal_date: ''
+    journal_title: ''
+    journal_text:''
+
+    BoxLayout:
+        orientation:
+        Label:
+            text: root.journal_date
+        Button:
+            text: root.journal_title
+            on_press:
+                Factory.ViewJournalPopup(root).open()
+        Button:
+            text: 'Edit'
+            on_press:
+                Factory.EditJournalPopup().open()
+
+
+<ViewJournalPopup>:
+    id: view_journal_pop
+    size_hint: 0.6, 0.6
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            Label:
+                text: root.rv_data[root.index]['journal_date'] if root.rv_data else ''
+            Label:
+                text: root.rv_data[root.index]['journal_title'] if root.rv_data else ''
+        Label:
+            text: root.rv_data[root.index]['journal_text'] if root.rv_data else ''
+        Button:
+            text: 'Back'
+            on_press: view_journal_pop.dismiss()
+
+<EditJournalPopup>:
+    id: edit_journal_pop
+    size_hint: 0.6, 0.6
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            id: journal_title_box
+            orientation: "horizontal"
+
+            Label:
+                id: journal_title
+                text: "Journal Title"
+
+            TextInput:
+                id: journal_title_input
+                text: root.rv_data[root.index]['journal_title'] if root.rv_data else ''
+        BoxLayout:
+            id: journal_date_box
+            orientation: 'horizontal'
+
+            Label:
+                id: journal_date
+                text: "Date"
+
+            TextInput:
+                id: journal_date_input
+                text: root.rv_data[root.index]['journal_date'] if root.rv_data else ''
+
+        TextInput:
+            id: journal_text
+            text: root.rv_data[root.index]['journal_text'] if root.rv_data else ''
+        BoxLayout:
+
+            Button:
+                id: delete_journal
+                text: 'Back'
+                on_press:
+                    edit_journal_pop.dismiss()
+
+            Button:
+                id: submit_journal
+                text: "Save Journal Entry"
+                on_press:
+                    edit_journal_pop.dismiss()
+
+
+<AddJournalPopup>:
+    id: add_journal_pop
+    size_hint: 0.6,0.6
+    title: 'Add Journal'
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            id: journal_title_box
+            orientation: "horizontal"
+
+            Label:
+                id: journal_title
+                text: "Journal Title"
+
+            TextInput:
+                id: journal_title_input
+                text: root.rv_data[root.index]['journal_title'] if root.rv_data else ''
+        BoxLayout:
+            id: journal_date_box
+            orientation: 'horizontal'
+
+            Label:
+                id: journal_date
+                text: "Date"
+
+            TextInput:
+                id: journal_date_input
+                text: root.rv_data[root.index]['journal_date'] if root.rv_data else root.date
+
+        TextInput:
+            id: journal_text
+            text: root.rv_data[root.index]['journal_text'] if root.rv_data else ''
+        BoxLayout:
+
+            Button:
+                id: delete_journal
+                text: 'Delete Journal Entry'
+                on_press:
+                    add_journal_pop.dismiss()
+
+            Button:
+                id: submit_journal
+                text: "Save Journal Entry"
+                on_press:
+                    print(root.index)
+                    app.root.get_screen("journal").insert(journal_date_input.text, journal_title_input.text, journal_text.text)
+                    add_journal_pop.dismiss()
+
+
+

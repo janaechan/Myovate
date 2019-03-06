@@ -1,6 +1,7 @@
 import serial
 import warnings
 import serial.tools.list_ports
+import time
 
 
 class Arduino():
@@ -52,10 +53,14 @@ class Arduino():
         final_data.sort()
         high_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num].append(high_cal)
-        self.arduino.write('py,' + str(channel_num) + "," + str(self.cal[channel_num[0]]) + "," + str(high_cal))
         return high_cal
 
-    def button_map(self, channel_num, button):
+    def send_calibration(self, channel_num):
+        lo_cal = str(self.cal[channel_num][0])
+        hi_cal = str(self.cal[channel_num][1])
+        self.arduino.write('py,' + str(channel_num) + "," + lo_cal + "," + hi_cal)
+
+    def send_button_map(self, channel_num, button):
         self.button_info[channel_num] = button
         self.arduino.write('py,' + str(channel_num) + "," + str(button))
 
@@ -72,3 +77,5 @@ class Arduino():
                 print("Multiple Arduino")
             set_arduino(all_ar[0])
             test_comm()
+            time.sleep(15)
+            send_button_map(1, 50)
