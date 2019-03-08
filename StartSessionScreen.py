@@ -9,6 +9,8 @@ from kivy.garden.graph import MeshLinePlot
 import CalibrationModule
 import audioop
 import pyaudio
+import Arduino
+
 
 levels = []  # store levels of microphone
 
@@ -38,13 +40,30 @@ def get_microphone_level():
         levels.append(mx)
 
 
+class AddArduinoPopup(Popup):
+
+    def __init__(self, arduino=None, **kwargs):
+        self.arduino = arduino
+
+
+class ArduinoOptionsPopup(Popup):
+
+    def __init__(self, arduino=None, arduino_ops=None, **kwargs):
+        self.arduino = arduino
+        self.arduino_ops = arduino_ops
+
+
 class StartSessionScreen(Screen):
     # TODO Add another popup: Input Arduino Serial Number
     session_date = datetime.date.today().strftime('%m/%d/%y')
 
     def __init__(self, **kwargs):
+        self.arduino = Arduino()
         super(StartSessionScreen, self).__init__(**kwargs)
         self.add_sensor_popup = AddSensorPopup()
+
+    def on_enter(self, *args):
+        AddArduinoPopup(self.arduino).open()
 
     def insert(self, sensor_name, sensor_loc, but_mapping):
         self.rv.data.insert(0, {'sensor_name': sensor_name or 'default value',
@@ -53,8 +72,8 @@ class StartSessionScreen(Screen):
                                 'need_calibration': True})
 
     def clear_text_input(self):
-        self.manager.get_screen('session_history').insert(self.ids.session_name_input.text,
-                                                          self.ids.session_date_input.text, self.ids.rv.data)
+        # self.manager.get_screen('session_history').insert(self.ids.session_name_input.text,
+        #                                                   self.ids.session_date_input.text, self.ids.rv.data)
         self.manager.get_screen('running_session').insert(self.ids.session_name_input.text,
                                                           self.ids.session_date_input.text, self.ids.rv.data)
 

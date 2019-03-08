@@ -293,4 +293,20 @@
             size: self.parent.width, self.parent.height/5
             size_hint: None, None
             text: 'Find Arduino'
-            #on_press:
+            on_press:
+                Factory.ArduinoOptionsPopup(root.arduino, root.arduino.find_arduino()).open()
+
+<ArduinoOptionsPopup>:
+    id: arduino_options_popup
+    size_hint: 0.5, 0.5
+    auto_dismiss: False
+    title: 'Connect Your Arudino'
+    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
+    BoxLayout:
+        id: layout
+        orientation: 'vertical'
+        CustomizedLabel:
+            size_hint: 1, 0.1
+            text: 'Choose your Arduino'
+        Spinner:
+

@@ -54,7 +54,9 @@
             size: self.texture_size
             padding: (80, 20)
             size_hint: None, None
-            #on_press: root.manager.get_screen('progress').insert(session_name_input.text, rv.data)
+            on_press:
+                root.manager.get_screen('session_history').insert(session_name_input.text, session_date_input.text, rv.data)
+                root.manager.current = "progress"
 
 <RunningScreenRow>:
     id: row
