@@ -74,9 +74,9 @@ class EditJournalPopup(Popup):
         super(EditJournalPopup, self).__init__(**kwargs)
 
 
-class ScreenManagement(ScreenManager):
-    def __init__(self, **kwargs):
-        super(ScreenManagement, self).__init__(**kwargs)
+# class ScreenManagement(ScreenManager):
+#     def __init__(self, **kwargs):
+#         super(ScreenManagement, self).__init__(**kwargs)
 
 
 class JournalScreen(Screen):

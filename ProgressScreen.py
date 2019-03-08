@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
 
 
-class MainScreen(Screen):
+class ProgressScreen(Screen):
     pass

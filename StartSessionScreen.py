@@ -1,4 +1,4 @@
-from kivy.uix.screenmanager import  Screen
+from kivy.uix.screenmanager import Screen
 from kivy.properties import ObjectProperty, BooleanProperty
 import datetime
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
@@ -7,7 +7,6 @@ from kivy.uix.popup import Popup
 from kivy.clock import Clock
 from kivy.garden.graph import MeshLinePlot
 import CalibrationModule
-import Misc
 
 
 class StartSessionScreen(Screen):

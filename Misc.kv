@@ -26,6 +26,12 @@
         size_hint_y: None
         size_y: 48
     Button:
+        on_release: app.root.current = "journal"
+        on_press: app.root.drop_down.dismiss()
+        text: "Journal"
+        size_hint_y: None
+        size_y: 48
+    Button:
         on_release: app.root.current = "awards"
         on_press: app.root.drop_down.dismiss()
         text: "Awards"
@@ -38,7 +44,7 @@
         size_hint_y: None
         size_y: 48
 
-<CustomizedLabel@Label>:
+<CustomizedLabel>:
     font_size: '20sp'
 
 <CustomizedButton>:

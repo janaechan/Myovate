@@ -1,5 +1,3 @@
-#: include Misc.kv
-
 <RunningSessionScreen>:
     rv: rv
     FloatLayout:
@@ -72,7 +70,7 @@
     sensor_name: ''
     sensor_loc: ''
     but_mapping: ''
-    need_calibration: False
+    #need_calibration: ''
     BoxLayout:
         size_hint: [1, 0.2]
         orientation: 'horizontal'
@@ -82,8 +80,8 @@
             text: 'Sensor Location: ' + root.sensor_loc
         CustomizedLabel:
             text: 'Mapped to: ' + root.but_mapping
-        CustomizedLabel:
-            text: 'Calibrated? ' + 'NO' if root.need_calibration else 'YES'
+    #    CustomizedLabel:
+    #        text: 'Calibrated? ' + 'NO' if root.need_calibration else 'YES'
 
     BoxLayout:
         orientation: 'horizontal'
