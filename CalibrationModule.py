@@ -36,10 +36,10 @@ class CalibrationRelaxPopup(Popup):
         self.cp.value += 1  # Updates progress_bar's progress
 
     def add_next_button(self):
-        ok_button = Misc.CustomizedButton(text='Next', pos_hint={'center_x': 0.75, 'center_y': 0.15},
-                           size=(self.ids.layout.width / 2, self.ids.layout.height / 5),
-                           size_hint=(None, None)
-                           )
+        ok_button = Misc.CustomizedButton(text='Next', pos_hint={'center_x': 0.75, 'center_y': 0.10},
+                                          size=(self.ids.layout.width / 2, self.ids.layout.height / 5),
+                                          size_hint=(None, None)
+                                          )
         ok_button.bind(on_press=self.clk)
         self.ids.layout.add_widget(ok_button)
 
@@ -77,7 +77,7 @@ class CalibrationContractPopup(Popup):
         self.cp.value += 1  # Updates progress_bar's progress
 
     def add_next_button(self):
-        ok_button = Misc.CustomizedButton(text='Next', pos_hint={'center_x': 0.75, 'center_y': 0.15},
+        ok_button = Misc.CustomizedButton(text='Next', pos_hint={'center_x': 0.75, 'center_y': 0.10},
                            size=(self.ids.layout.width / 2, self.ids.layout.height / 5),
                            size_hint=(None, None)
                            )

@@ -1,7 +1,7 @@
 <CalibrationSetupPopup>:
     id: calibration_setup_pop
     size_hint: 0.5, 0.5
-    title: ''
+    title: 'Put On Sensors'
     auto_dismiss: False
     FloatLayout:
         CustomizedLabel:
@@ -32,7 +32,7 @@
     id: calibration_relax_pop
     cp: cp
     size_hint: 0.5, 0.5
-    title: ''
+    title: 'Calibrate Relaxation'
     auto_dismiss: False
     r_cal: relax_calibration
     on_open: root.puopen()
@@ -51,7 +51,7 @@
             max: 100
             value: 0
         CustomizedButton:
-            pos_hint: {'center_x': 0.25, 'center_y': 0.15}
+            pos_hint: {'center_x': 0.25, 'center_y': 0.10}
             size: self.parent.width/2, self.parent.height/5
             size_hint: None, None
             text: 'Cancel Calibration'
@@ -64,7 +64,7 @@
     size_hint: 0.5, 0.5
     c_cal: contract_calibration
     auto_dismiss: False
-    title: ''
+    title: 'Calibrate Contraction'
     on_open: root.puopen()
     FloatLayout:
         id: layout
@@ -82,7 +82,7 @@
             max: 100
             value: 0
         CustomizedButton:
-            pos_hint: {'center_x': 0.25, 'center_y': 0.15}
+            pos_hint: {'center_x': 0.25, 'center_y': 0.10}
             size: self.parent.width/2, self.parent.height/5
             size_hint: None, None
             text: 'Cancel Calibration'
@@ -92,16 +92,17 @@
 <CalibrationCompletePopup>:
     id: calibration_complete_pop
     size_hint: 0.5, 0.5
-    title: ''
+    title: 'Calibration Complete'
     auto_dismiss: False
     FloatLayout:
         id: layout
         CustomizedLabel:
-            text: "Calibration Complete. Session ready to begin."
+            text: "Calibration Complete. Press 'Done' to add another sensor or start your session."
+            multiline: True
             halign: "center"
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         CustomizedButton:
-            pos_hint: {'center_x': 0.5, 'center_y': 0.15}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.10}
             size: self.parent.width/2, self.parent.height/5
             size_hint: None, None
             text: 'Done'

@@ -7,6 +7,35 @@ from kivy.uix.popup import Popup
 from kivy.clock import Clock
 from kivy.garden.graph import MeshLinePlot
 import CalibrationModule
+import audioop
+import pyaudio
+
+levels = []  # store levels of microphone
+
+
+def get_microphone_level():
+    """
+    source: http://stackoverflow.com/questions/26478315/getting-volume-levels-from-pyaudio-for-use-in-arduino
+    audioop.max alternative to audioop.rms
+    """
+    chunk = 100
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 30000
+    p = pyaudio.PyAudio()
+
+    s = p.open(format=FORMAT,
+               channels=CHANNELS,
+               rate=RATE,
+               input=True,
+               frames_per_buffer=chunk)
+    global levels
+    while True:
+        data = s.read(chunk)
+        mx = audioop.rms(data, 2)
+        if len(levels) >= 100:
+            levels = []
+        levels.append(mx)
 
 
 class StartSessionScreen(Screen):
@@ -34,7 +63,7 @@ class StartSessionScreen(Screen):
         self.parent.current = 'running_session'
 
 
-class Row(RecycleDataViewBehavior, BoxLayout):
+class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
     ''' Add selection support to the Button '''
     index = None
     selected = BooleanProperty(False)
@@ -43,17 +72,18 @@ class Row(RecycleDataViewBehavior, BoxLayout):
     rv = ObjectProperty(None)
 
     def __init__(self, **kwargs):
-        super(Row, self).__init__(**kwargs)
+        super(StartSessionRow, self).__init__(**kwargs)
         self.plot = MeshLinePlot(color=[1, 0, 0, 1])
+        # self.levels = []  # store levels of microphone
 
     def refresh_view_attrs(self, rv, index, data):
         ''' Catch and handle the view changes '''
         self.index = index
-        return super(Row, self).refresh_view_attrs(rv, index, data)
+        return super(StartSessionRow, self).refresh_view_attrs(rv, index, data)
 
     def on_touch_down(self, touch):
         ''' Add selection on touch down '''
-        if super(Row, self).on_touch_down(touch):
+        if super(StartSessionRow, self).on_touch_down(touch):
             return True
         if self.collide_point(*touch.pos) and self.selectable:
             return self.parent.select_with_touch(self.index, touch)
@@ -66,7 +96,6 @@ class Row(RecycleDataViewBehavior, BoxLayout):
         print(self.index)
 
     def remove(self):
-        print('REMOVE ENTRY')
         if self.rv:
             self.rv.data.pop(self.index)
 

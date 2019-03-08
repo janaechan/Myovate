@@ -53,7 +53,7 @@
             scroll_type: ['bars', 'content']
             scroll_wheel_distance: dp(114)
             bar_width: dp(10)
-            viewclass: 'Row'
+            viewclass: 'StartSessionRow'
             SelectableRecycleBoxLayout:
                 id: controller
                 key_selection: 'selectable'
@@ -78,7 +78,7 @@
                 #root.start_session()
                 #app.root.get_screen('start_session').insert(sensor_name_input.text, sensor_loc_input.text, but_mapping_input.text) if sensor_name_input.text and sensor_loc_input.text else print('Cannot Calibrate Sensor')
 
-<Row>:
+<StartSessionRow>:
     id: row
     orientation: 'vertical'
     canvas.before:
@@ -141,7 +141,7 @@
     id: add_sensor_pop
     size_hint: 0.6, 0.6
     auto_dismiss: False
-    title: ''
+    title: 'Add a Sensor'
     FloatLayout:
         CustomizedLabel:
             id: sensor_name_id
@@ -232,7 +232,7 @@
     id: confirm_delete_popup
     size_hint: 0.5, 0.5
     auto_dismiss: False
-    title: ''
+    title: 'Confirm Deletion'
     separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
@@ -260,7 +260,7 @@
     id: missing_field_popup
     size_hint: 0.5, 0.5
     auto_dismiss: False
-    title: ''
+    title: 'Fields Incomplete'
     separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
@@ -280,7 +280,7 @@
     id: add_arduino_popup
     size_hint: 0.5, 0.5
     auto_dismiss: False
-    title: ''
+    title: 'Connect Your Arduino'
     separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
