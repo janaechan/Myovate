@@ -14,11 +14,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty, BooleanProperty
 
 
-class ScreenManagement(ScreenManager):
-    def __init__(self, **kwargs):
-        super(ScreenManagement, self).__init__(**kwargs)
-
-
 class AwardsScreen(Screen):
 
     def __init__(self, **kwargs):
@@ -63,16 +58,3 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 
 class AwardPopup(Popup):
     pass
-
-
-class AwardApp(App):
-
-    def build(self):
-        return Builder.load_file('AwardsScreen.kv')
-
-
-if __name__ == '__main__':
-    Window.fullscreen = 'auto'
-    award = AwardApp()
-    award.run()
-

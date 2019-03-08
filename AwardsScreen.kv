@@ -1,17 +1,9 @@
-#: import NoTransition kivy.uix.screenmanager.NoTransition
 #:import Factory kivy.factory.Factory
-#: include Misc.kv
 
 <AwardLabel@Label>
     font_size: '30sp'
     bold: True
 
-
-ScreenManagement:
-    transition: NoTransition()
-    AwardsScreen:
-        id: award
-        name: "award"
 
 <AwardsScreen>:
     FloatLayout:
@@ -68,7 +60,7 @@ ScreenManagement:
                 size_hint: 1, 0.1
                 on_press:
                     Factory.AwardPopup().open()
-                    app.root.get_screen('award').insert('trophy.png', 'First Session Award')
+                    app.root.get_screen('awards').insert('trophy.png', 'First Session Award')
 
             RecycleView:
                 id: rv
