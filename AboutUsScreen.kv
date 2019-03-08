@@ -1,0 +1,16 @@
+#: include Misc.kv
+
+<AboutUsScreen>:
+    FloatLayout:
+        CustomizedButton:
+            id: btn
+            text: 'Menu'
+            on_release: app.root.drop_down.open(self)
+            size_hint: None, None
+            size: self.texture_size
+            padding: (80, 20)
+            pos_hint: ({'top': 1})
+        CustomizedLabel:
+            text: 'Who are we?'
+            size_hint_y: None
+            pos_hint: ({'center_x': 0.5, 'top': 0.95})

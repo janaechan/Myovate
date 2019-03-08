@@ -1,17 +1,14 @@
 from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.app import App
-from kivy.core.window import Window
+import Misc
+
 from kivy.uix.popup import Popup
 import datetime
-from kivy.properties import ObjectProperty
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
-from kivy.lang.builder import Builder
-import time
 
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior, RecycleBoxLayout):
@@ -96,11 +93,3 @@ class JournalScreen(Screen):
                                 'journal_title': j_title or 'default value',
                                 'journal_text': j_text or 'default value'}
 
-
-class JournalApp(App):
-    pass
-
-
-if __name__ == '__main__':
-    Window.fullscreen = 'auto'
-    JournalApp().run()

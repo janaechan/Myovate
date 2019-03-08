@@ -1,67 +1,111 @@
-<SensorScreen>:
+#: include Misc.kv
+
+<CalibrationSetupPopup>:
+    id: calibration_setup_pop
+    size_hint: 0.5, 0.5
+    title: ''
+    auto_dismiss: False
     FloatLayout:
-        AnchorLayout:
-            anchor_x:'center'
-            anchor_y:'center'
+        CustomizedLabel:
+            text:"Step 1: Place the red sensor on the targeted muscle"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+        CustomizedLabel:
+            text:"Step 2: Place the black sensor on a nearby bone"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
 
-            Label:
-                text:"Step 1: Place the red sensor on the targeted muscle"
+        CustomizedButton:
+            pos: self.parent.pos
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Cancel Calibration'
+            on_press:
+                calibration_setup_pop.dismiss()
+        CustomizedButton:
+            pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Begin Calibration'
+            on_press:
+                calibration_setup_pop.dismiss()
+                Factory.CalibrationRelaxPopup().open()
 
-            Label:
-                text:"Step 2: Place the black sensor on a nearby bone"
-        AnchorLayout:
-            anchor_x:'left'
-            anchor_y:'bottom'
 
-            Button:
-                text:'Next'
-                on_press: root.manager.current = 'relax'
-
-<RelaxScreen>:
+<CalibrationRelaxPopup>:
+    id: calibration_relax_pop
+    cp: cp
+    size_hint: 0.5, 0.5
+    title: ''
+    auto_dismiss: False
+    r_cal: relax_calibration
+    on_open: root.puopen()
     FloatLayout:
-        AnchorLayout:
-            anchor_x:'top'
-            anchor_y:'center'
+        id: layout
+        CustomizedLabel:
+            text: "Please relax your muscle until progress bar full."
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+        CustomizedLabel:
+            id: relax_calibration
+            text: "Calibration in progress ..."
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+        ProgressBar:
+            id: cp
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            max: 100
+            value: 0
+        CustomizedButton:
+            pos_hint: {'center_x': 0.25, 'center_y': 0.15}
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Cancel Calibration'
+            on_press:
+                calibration_relax_pop.dismiss()
 
-            Label:
-                text:"Relax and wait until the progress is finished"
-
-        AnchorLayout:
-            anchor_x:"center"
-            anchor_y:"center"
-
-            CircularProgressBar:
-
-        AnchorLayout:
-            anchor_x:'left'
-            anchor_y:'bottom'
-
-            Button:
-                text:'Next'
-                on_press: root.manager.current = 'contract'
-
-<ContractScreen>:
+<CalibrationContractPopup>:
+    id: calibration_contract_pop
+    cp: cp
+    size_hint: 0.5, 0.5
+    c_cal: contract_calibration
+    auto_dismiss: False
+    title: ''
+    on_open: root.puopen()
     FloatLayout:
-        AnchorLayout:
-            anchor_x:'top'
-            anchor_y:'center'
+        id: layout
+        CustomizedLabel:
+            text: "Contract targeted muscle as much as possible and wait until\nthe progress bar is filled"
+            halign: "center"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.7}
+        CustomizedLabel:
+            id: contract_calibration
+            text: "Calibration in progress ..."
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
+        ProgressBar:
+            id: cp
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            max: 100
+            value: 0
+        CustomizedButton:
+            pos_hint: {'center_x': 0.25, 'center_y': 0.15}
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Cancel Calibration'
+            on_press:
+                calibration_contract_pop.dismiss()
 
-            Label:
-                text:"Contract targeted muscle as much as possible and wait until the progress is finished"
-
-        AnchorLayout:
-            anchor_x:"center"
-            anchor_y:"center"
-
-            CircularProgressBar:
-
-        AnchorLayout:
-            anchor_x:'left'
-            anchor_y:'bottom'
-
-            Button:
-                text:'Next'
-                on_press: root.manager.current = 'contract'
-
-
-
+<CalibrationCompletePopup>:
+    id: calibration_complete_pop
+    size_hint: 0.5, 0.5
+    title: ''
+    auto_dismiss: False
+    FloatLayout:
+        id: layout
+        CustomizedLabel:
+            text: "Calibration Complete. Session ready to begin."
+            halign: "center"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+        CustomizedButton:
+            pos_hint: {'center_x': 0.5, 'center_y': 0.15}
+            size: self.parent.width/2, self.parent.height/5
+            size_hint: None, None
+            text: 'Done'
+            on_press:
+                calibration_complete_pop.dismiss()
