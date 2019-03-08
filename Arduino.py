@@ -15,6 +15,7 @@ class Arduino():
         self.cal = {}
         self.ser = None
         self.arduino_ports = None
+        self.neg_electrode = str(1 << 11)
         self.button_info = {}
         self.button_code = {
 
@@ -36,11 +37,20 @@ class Arduino():
         self.ser = ser
         self.arduino = serial.Serial(self.ser, self.baud_rate, timeout=0.1)
 
+    def get_data(self):
+        return self.arduino.readline().split(',')
+
+    def remove_electrode(self, channel_num):
+        self.button_info.pop(channel_num)
+        send = 'py,' + self.neg_electrode + ',' + self.neg_electrode
+        send = send.encode()
+        self.arduino.write(send)
+
     def low_calibration(self, channel_num):
         final_data = []
         count = 0
         while count < self.data_points:
-            data = self.arduino.readline().split(',')
+            data = self.get_data()
             final_data.append(int(data[channel_num]))
             count = count + 1
         final_data.sort()
@@ -51,7 +61,7 @@ class Arduino():
     def high_calibration(self, channel_num):
         final_data = []
         while len(final_data) < self.data_points:
-            data = self.arduino.readline().split(',')
+            data = self.get_data()
             final_data.append(int(data[channel_num]))
         final_data.sort()
         high_cal = sum(final_data[0:self.cal_points])/self.cal_points
