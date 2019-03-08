@@ -1,5 +1,7 @@
 #: import NoTransition kivy.uix.screenmanager.NoTransition
 #:import Factory kivy.factory.Factory
+#:include AwardsScreen.kv
+#:include Misc.kv
 
 <CustomizedLabel@Label>:
     font_size: '20sp'
@@ -21,7 +23,7 @@
     sensor_name: ''
     sensor_loc: ''
     but_mapping: ''
-    need_calibration: ''
+    need_calibration: False
     BoxLayout:
         size_hint: [1, 0.2]
         orientation: 'horizontal'
@@ -166,46 +168,6 @@ ScreenManagement:
         id: about_us
         name: "about_us"
 
-
-<DropDownMenu>:
-    Button:
-        on_release: app.root.current = "main"
-        on_press: app.root.drop_down.dismiss()
-        text: "Home"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "start_session"
-        on_press:
-            app.root.drop_down.dismiss()
-            #app.root.add_sensor_popup.open()
-        text: "Start Session"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "session_history"
-        on_press: app.root.drop_down.dismiss()
-        text: "Session History"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "progress"
-        on_press: app.root.drop_down.dismiss()
-        text: "Progress Report"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "awards"
-        on_press: app.root.drop_down.dismiss()
-        text: "Awards"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "about_us"
-        on_press: app.root.drop_down.dismiss()
-        text: "About Us"
-        size_hint_y: None
-        size_y: 48
 
 <CalibrationSetupPopup>:
     id: calibration_setup_pop
@@ -741,20 +703,7 @@ ScreenManagement:
                 orientation: 'vertical'
                 spacing: dp(2)
 
-<AwardsScreen>:
-    FloatLayout:
-        CustomizedButton:
-            id: btn
-            text: 'Menu'
-            on_release: app.root.drop_down.open(self)
-            size_hint: None, None
-            size: self.texture_size
-            padding: (80, 20)
-            pos_hint: ({'top': 1})
-        CustomizedLabel:
-            text: 'Achievements'
-            size_hint_y: None
-            pos_hint: ({'center_x': 0.5, 'top': 0.95})
+
 
 <AboutUsScreen>:
     FloatLayout:

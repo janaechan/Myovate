@@ -30,7 +30,8 @@ from kivy.garden.graph import MeshLinePlot
 from threading import Thread
 import audioop
 import pyaudio
-
+import AwardsScreen
+import Misc
 
 def get_microphone_level():
     """
@@ -412,8 +413,8 @@ class MissingFieldPopup(Popup):
     pass
 
 
-class DropDownMenu(DropDown):
-    pass
+# class DropDownMenu(DropDown):
+#     pass
 
 
 class MainScreen(Screen):
@@ -484,8 +485,8 @@ class ProgressScreen(Screen):
     pass
 
 
-class AwardsScreen(Screen):
-    pass
+# class AwardsScreen(Screen):
+#     pass
 
 
 class AboutUsScreen(Screen):
@@ -495,7 +496,7 @@ class AboutUsScreen(Screen):
 class ScreenManagement(ScreenManager):
     def __init__(self, **kwargs):
         super(ScreenManagement, self).__init__(**kwargs)
-        self.drop_down = DropDownMenu()
+        self.drop_down = Misc.DropDownMenu()
 
 
 presentation = Builder.load_file("NewMyovate.kv")
