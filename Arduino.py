@@ -2,13 +2,14 @@ import serial
 import warnings
 import serial.tools.list_ports
 import time
+import NewMyovate
 
 
 class Arduino():
 
     def __init__(self):
         self.baud_rate = 9600
-        self.data_points = 120
+        self.data_points = 1500
         self.cal_points = 70
         self.arduino = None
         self.cal = {}
@@ -37,9 +38,11 @@ class Arduino():
 
     def low_calibration(self, channel_num):
         final_data = []
-        while len(final_data) < self.data_points:
+        count = 0
+        while count < self.data_points:
             data = self.arduino.readline().split(',')
             final_data.append(int(data[channel_num]))
+            count = count + 1
         final_data.sort()
         low_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num] = [low_cal]

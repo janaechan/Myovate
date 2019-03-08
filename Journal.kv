@@ -70,85 +70,34 @@ ScreenManagement:
         Button:
             text: 'Edit'
             on_press:
-                Factory.EditJournalPopup().open()
+                Factory.EditJournalPopup(root).open()
 
 
 <ViewJournalPopup>:
     id: view_journal_pop
     size_hint: 0.6, 0.6
+    title: root.rv_data[root.index]['journal_date'] + ": " + root.rv_data[root.index]['journal_title']
     auto_dismiss: False
     BoxLayout:
         orientation: 'vertical'
-        BoxLayout:
-            orientation: 'horizontal'
-            Label:
-                text: root.rv_data[root.index]['journal_date'] if root.rv_data else ''
-            Label:
-                text: root.rv_data[root.index]['journal_title'] if root.rv_data else ''
         Label:
             text: root.rv_data[root.index]['journal_text'] if root.rv_data else ''
         Button:
+            size_hint: 1, 0.1
             text: 'Back'
             on_press: view_journal_pop.dismiss()
 
 <EditJournalPopup>:
     id: edit_journal_pop
-    size_hint: 0.6, 0.6
-    auto_dismiss: False
-    BoxLayout:
-        orientation: 'vertical'
-        BoxLayout:
-            id: journal_title_box
-            orientation: "horizontal"
-
-            Label:
-                id: journal_title
-                text: "Journal Title"
-
-            TextInput:
-                id: journal_title_input
-                text: root.rv_data[root.index]['journal_title'] if root.rv_data else ''
-        BoxLayout:
-            id: journal_date_box
-            orientation: 'horizontal'
-
-            Label:
-                id: journal_date
-                text: "Date"
-
-            TextInput:
-                id: journal_date_input
-                text: root.rv_data[root.index]['journal_date'] if root.rv_data else ''
-
-        TextInput:
-            id: journal_text
-            text: root.rv_data[root.index]['journal_text'] if root.rv_data else ''
-        BoxLayout:
-
-            Button:
-                id: delete_journal
-                text: 'Back'
-                on_press:
-                    edit_journal_pop.dismiss()
-
-            Button:
-                id: submit_journal
-                text: "Save Journal Entry"
-                on_press:
-                    edit_journal_pop.dismiss()
-
-
-<AddJournalPopup>:
-    id: add_journal_pop
     size_hint: 0.6,0.6
-    title: 'Add Journal'
+    title: 'Edit Journal Entry'
     auto_dismiss: False
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
             id: journal_title_box
             orientation: "horizontal"
-
+            size_hint: 1, 0.1
             Label:
                 id: journal_title
                 text: "Journal Title"
@@ -159,7 +108,7 @@ ScreenManagement:
         BoxLayout:
             id: journal_date_box
             orientation: 'horizontal'
-
+            size_hint: 1, 0.1
             Label:
                 id: journal_date
                 text: "Date"
@@ -172,7 +121,61 @@ ScreenManagement:
             id: journal_text
             text: root.rv_data[root.index]['journal_text'] if root.rv_data else ''
         BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Button:
+                id: delete_journal
+                text: 'Back'
+                on_press:
+                    edit_journal_pop.dismiss()
 
+            Button:
+                id: submit_journal
+                text: "Save Journal Entry"
+                on_press:
+                    print(root.index)
+                    app.root.get_screen("journal").set(journal_date_input.text, journal_title_input.text, journal_text.text, root.index)
+                    edit_journal_pop.dismiss()
+
+
+
+<AddJournalPopup>:
+    id: add_journal_pop
+    size_hint: 0.6,0.6
+    title: 'Add Journal Entry'
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            id: journal_title_box
+            orientation: "horizontal"
+            size_hint: 1, 0.1
+            Label:
+                id: journal_title
+                text: "Journal Title"
+
+            TextInput:
+                id: journal_title_input
+                text: root.rv_data[root.index]['journal_title'] if root.rv_data else ''
+        BoxLayout:
+            id: journal_date_box
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
+            Label:
+                id: journal_date
+                text: "Date"
+
+            TextInput:
+                id: journal_date_input
+                text: root.rv_data[root.index]['journal_date'] if root.rv_data else root.date
+
+        TextInput:
+            id: journal_text
+            hint_text: "Write Journal Entry Here...\n For example, how your muscles felt during the session? Fatigue?"
+            text: root.rv_data[root.index]['journal_text'] if root.rv_data else ''
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: 1, 0.1
             Button:
                 id: delete_journal
                 text: 'Delete Journal Entry'
