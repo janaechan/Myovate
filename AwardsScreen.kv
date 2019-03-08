@@ -1,3 +1,18 @@
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+#:import Factory kivy.factory.Factory
+#: include Misc.kv
+
+<AwardLabel@Label>
+    font_size: '30sp'
+    bold: True
+
+
+ScreenManagement:
+    transition: NoTransition()
+    AwardsScreen:
+        id: award
+        name: "award"
+
 <AwardsScreen>:
     FloatLayout:
         CustomizedButton:
@@ -14,9 +29,75 @@
             pos_hint: ({'center_x': 0.5, 'top': 0.95})
 
 <Award>
+    id: award
+    orientation: 'vertical'
+    award_source: ''
+    award_name: ''
     BoxLayout:
         orientation: 'vertical'
 
         Image:
-            id: award
-            source: root.source
+            id: award_image
+            source: root.award_source
+
+        AwardLabel:
+            text: root.award_name
+
+<AwardsScreen>:
+    rv : rv
+    AnchorLayout:
+        anchor_y: 'top'
+        anchor_x: 'center'
+#        CustomizedButton:
+#            id: btn
+#            text: 'Menu'
+#            on_release: app.root.drop_down.open(self)
+#            size_hint: None, None
+#            size: self.texture_size
+#            padding: (80, 20)
+#            pos_hint: ({'top': 1})
+        BoxLayout:
+            orientation: 'vertical'
+            CustomizedLabel:
+                text: 'Awards'
+                size_hint: 1, 0.1
+    #            size_hint_y: None
+    #            pos_hint: ({'center_x': 0.5, 'top': 0.95})
+            CustomizedButton:
+                text: 'Claim Rewards!'
+                size_hint: 1, 0.1
+                on_press:
+                    Factory.AwardPopup().open()
+                    app.root.get_screen('award').insert('trophy.png', 'First Session Award')
+
+            RecycleView:
+                id: rv
+                scroll_type: ['bars', 'content']
+                scroll_wheel_distance: dp(114)
+                bar_width: dp(10)
+                viewclass: 'Award'
+                SelectableRecycleBoxLayout:
+                    default_size: None, dp(250)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    spacing: dp(20)
+                    touch_multiselect: True
+<AwardPopup>:
+    id: award_popup
+    size_hint: 0.6, 0.6
+    title: 'Congratulations!'
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        Image:
+            source: 'trophy.png'
+        AwardLabel:
+            text: 'First Session Award'
+        CustomizedLabel:
+            text: 'Congratulations! You just received the First Session Award for completing your first session!'
+        CustomizedButton:
+            text: 'Close'
+            on_press:
+                award_popup.dismiss()
