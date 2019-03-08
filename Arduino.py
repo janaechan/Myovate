@@ -27,7 +27,7 @@ class Arduino():
         self.arduino_ports = [
             p.device
             for p in serial.tools.list_ports.comports()
-            if 'Arduino' in p.description
+            if 'USB Serial' in p.description
         ]
         return self.arduino_ports
 
@@ -58,24 +58,29 @@ class Arduino():
     def send_calibration(self, channel_num):
         lo_cal = str(self.cal[channel_num][0])
         hi_cal = str(self.cal[channel_num][1])
-        self.arduino.write('py,' + str(channel_num) + "," + lo_cal + "," + hi_cal)
+        sends = 'py,' + str(channel_num) + "," + lo_cal + "," + hi_cal
+        sends = sends.encode()
+        self.arduino.write(sends)
 
     def send_button_map(self, channel_num, button):
         self.button_info[channel_num] = button
-        self.arduino.write('py,' + str(channel_num) + "," + str(button))
+        sends = 'py,' + str(channel_num) + "," + str(button)
+        sends = sends.encode()
+        self.arduino.write(sends)
 
     def test_comm(self):
-        self.arduino.write('py,400,200')
+        self.arduino.write(b'py,1,200')
         print(self.arduino.readline())
 
-    if __name__ == '__main__':
-        all_ar = find_arduino()
-        if len(all_ar) < 1:
-            print("No Arduino found")
-        else:
-            if len(all_ar) > 1:
-                print("Multiple Arduino")
-            set_arduino(all_ar[0])
-            test_comm()
-            time.sleep(15)
-            send_button_map(1, 50)
+if __name__ == '__main__':
+    a = Arduino()
+    all_ar = a.find_arduino()
+    if len(all_ar) < 1:
+        print("No Arduino found")
+    else:
+        if len(all_ar) > 1:
+            print("Multiple Arduino")
+        a.set_arduino(all_ar[0])
+        #a.test_comm()
+        time.sleep(10)
+        a.send_button_map(1, 50)
