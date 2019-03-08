@@ -243,6 +243,7 @@ ScreenManagement:
     size_hint: 0.5, 0.5
     title: ''
     auto_dismiss: False
+    r_cal: relax_calibration
     on_open: root.puopen()
     FloatLayout:
         id: layout
@@ -250,13 +251,14 @@ ScreenManagement:
             text: "Please relax your muscle until progress bar full."
             pos_hint: {'center_x': 0.5, 'center_y': 0.7}
         CustomizedLabel:
+            id: relax_calibration
             text: "Calibration in progress ..."
             pos_hint: {'center_x': 0.5, 'center_y': 0.6}
         ProgressBar:
             id: cp
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
             max: 100
-            value: 75
+            value: 0
         CustomizedButton:
             pos_hint: {'center_x': 0.25, 'center_y': 0.15}
             size: self.parent.width/2, self.parent.height/5
@@ -269,6 +271,7 @@ ScreenManagement:
     id: calibration_contract_pop
     cp: cp
     size_hint: 0.5, 0.5
+    c_cal: contract_calibration
     auto_dismiss: False
     title: ''
     on_open: root.puopen()
@@ -279,13 +282,14 @@ ScreenManagement:
             halign: "center"
             pos_hint: {'center_x': 0.5, 'center_y': 0.7}
         CustomizedLabel:
+            id: contract_calibration
             text: "Calibration in progress ..."
             pos_hint: {'center_x': 0.5, 'center_y': 0.6}
         ProgressBar:
             id: cp
             pos_hint: {'center_x': 0.5, 'center_y': 0.4}
             max: 100
-            value: 75
+            value: 0
         CustomizedButton:
             pos_hint: {'center_x': 0.25, 'center_y': 0.15}
             size: self.parent.width/2, self.parent.height/5
