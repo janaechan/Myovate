@@ -1,7 +1,6 @@
-#: import NoTransition kivy.uix.screenmanager.NoTransition
 #: include Misc.kv
 
-<AwardsScreen>:
+<AboutUsScreen>:
     FloatLayout:
         CustomizedButton:
             id: btn
@@ -12,14 +11,6 @@
             padding: (80, 20)
             pos_hint: ({'top': 1})
         CustomizedLabel:
-            text: 'Achievements'
+            text: 'Who are we?'
             size_hint_y: None
             pos_hint: ({'center_x': 0.5, 'top': 0.95})
-
-<Award>
-    BoxLayout:
-        orientation: 'vertical'
-
-        Image:
-            id: award
-            source: root.source

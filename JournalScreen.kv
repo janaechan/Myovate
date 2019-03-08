@@ -1,6 +1,6 @@
 #: import NoTransition kivy.uix.screenmanager.NoTransition
 #:import Factory kivy.factory.Factory
-
+#: include Misc.kv
 
 ScreenManagement:
     transition: NoTransition()
@@ -11,46 +11,55 @@ ScreenManagement:
 
 <JournalScreen>:
     rv : rv
-    AnchorLayout:
-        anchor_x: 'center'
-        anchor_y: 'top'
-
-        BoxLayout:
-            orientation: 'vertical'
-
-            Label:
-                text: 'My Journal'
-                size_hint: 1, 0.1
-
-            Button:
-                text: 'Add Journal Entry'
-                size_hint: 1, 0.1
-                on_press: Factory.AddJournalPopup().open()
+    FloatLayout:
+        CustomizedButton:
+            id: btn
+            text: 'Menu'
+            on_release: app.root.drop_down.open(self)
+            size_hint: None, None
+            size: self.texture_size
+            padding: (80, 20)
+            pos_hint: ({'top': 1})
+        AnchorLayout:
+            anchor_x: 'center'
+            anchor_y: 'top'
 
             BoxLayout:
-                orientation: "horizontal"
-                size_hint: 1, 0.1
-                Label:
-                    text: "Date"
-                Label:
-                    text: "Journal Title"
-                Label:
-                    text: "Edit Journal Entry"
+                orientation: 'vertical'
 
-            RecycleView:
-                id: rv
-                scroll_type: ['bars', 'content']
-                scroll_wheel_distance: dp(114)
-                bar_width: dp(10)
-                viewclass: 'JournalEntry'
-                SelectableRecycleBoxLayout:
-                    default_size: None, dp(150)
-                    default_size_hint: 1, None
-                    size_hint_y: None
-                    height: self.minimum_height
-                    orientation: 'vertical'
-                    spacing: dp(20)
-                    touch_multiselect: True
+                Label:
+                    text: 'My Journal'
+                    size_hint: 1, 0.1
+
+                Button:
+                    text: 'Add Journal Entry'
+                    size_hint: 1, 0.1
+                    on_press: Factory.AddJournalPopup().open()
+
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint: 1, 0.1
+                    Label:
+                        text: "Date"
+                    Label:
+                        text: "Journal Title"
+                    Label:
+                        text: "Edit Journal Entry"
+
+                RecycleView:
+                    id: rv
+                    scroll_type: ['bars', 'content']
+                    scroll_wheel_distance: dp(114)
+                    bar_width: dp(10)
+                    viewclass: 'JournalEntry'
+                    SelectableRecycleBoxLayout:
+                        default_size: None, dp(150)
+                        default_size_hint: 1, None
+                        size_hint_y: None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+                        spacing: dp(20)
+                        touch_multiselect: True
 
 <JournalEntry>:
     id: journal_entry

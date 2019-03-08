@@ -1,0 +1,47 @@
+#: include Misc.kv
+
+<SessionHistoryScreen>:
+    rv_progress: rv_progress
+    FloatLayout:
+        CustomizedButton:
+            id: btn
+            text: 'Menu'
+            on_release: app.root.drop_down.open(self)
+            size_hint: None, None
+            size: self.texture_size
+            padding: (80, 20)
+            pos_hint: ({'top': 1})
+        CustomizedLabel:
+            text: 'Past Sessions'
+            size_hint_y: None
+            pos_hint: ({'center_x': 0.5, 'top': 0.95})
+
+        RecycleView:
+            id: rv_progress
+            pos_hint: ({'center_x': 0.5, 'center_y': 0.5})
+            size_hint: .9, .5
+            scroll_type: ['bars', 'content']
+            scroll_wheel_distance: dp(50)
+            bar_width: dp(10)
+            viewclass: 'SessionHistoryRow'
+            SelectableRecycleBoxLayout:
+                default_size: None, dp(56)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: dp(2)
+
+<SessionHistoryRow>:
+    canvas.before:
+        Color:
+            rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    session_name: ''
+    session_date: ''
+    CustomizedLabel:
+        text: root.session_date
+    CustomizedLabel:
+        text: root.session_name
