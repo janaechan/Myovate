@@ -1,17 +1,22 @@
 from kivy.app import App
-from kivy.uix.button import Button
 from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.core.window import Window
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.dropdown import DropDown
+
+from kivy.uix.screenmanager import ScreenManager
 from threading import Thread
 import audioop
 import pyaudio
-import AboutUsScreen, AwardsScreen
-import StartSessionScreen, SessionHistoryScreen, RunningSessionScreen
+
+import AboutUsScreen
+import AwardsScreen
 import JournalScreen
+import SessionHistoryScreen
+import RunningSessionScreen
+import StartSessionScreen
+import MainScreen
+import ProgressScreen
 import Misc
 
 
@@ -40,15 +45,15 @@ def get_microphone_level():
         levels.append(mx)
 
 
+class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
+                                 RecycleBoxLayout):
+    ''' Adds selection and focus behaviour to the view. '''
+
+
 class ScreenManagement(ScreenManager):
-
     def __init__(self, **kwargs):
-        self.drop_down = Misc.DropDownMenu()
         super(ScreenManagement, self).__init__(**kwargs)
-
-
-class MainScreen(Screen):
-    pass
+        self.drop_down = Misc.DropDownMenu()
 
 
 class NewMyovateApp(App):
@@ -56,15 +61,10 @@ class NewMyovateApp(App):
 
 
 if __name__ == '__main__':
+    # TODO create arduino instance
     levels = []  # store levels of microphone
-
     get_level_thread = Thread(target=get_microphone_level)
     get_level_thread.daemon = True
     get_level_thread.start()
     Window.fullscreen = 'auto'
     NewMyovateApp().run()
-    """
-    Gamepad: +/- x; +/- y
-    Keyboard: 
-    Confirm Arduino when you start session
-    """

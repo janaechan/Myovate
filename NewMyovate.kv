@@ -2,13 +2,15 @@
 #:import Factory kivy.factory.Factory
 #: include AboutUsScreen.kv
 #: include AwardsScreen.kv
-#: include CalibrationModule.kv
 #: include JournalScreen.kv
-#: include RunningSessionScreen.kv
 #: include SessionHistoryScreen.kv
+#: include RunningSessionScreen.kv
 #: include StartSessionScreen.kv
-#: include Misc.kv
+#: include CalibrationModule.kv
+#: include MainScreen.kv
+#: include ProgressScreen.kv
 
+#: include Misc.kv
 
 ScreenManagement:
     transition: NoTransition()
@@ -24,6 +26,9 @@ ScreenManagement:
     SessionHistoryScreen:
         id: session_history
         name: "session_history"
+    ProgressScreen:
+        id: progress
+        name: "progress"
     JournalScreen:
         id: journal
         name: "journal"
@@ -33,34 +38,3 @@ ScreenManagement:
     AboutUsScreen:
         id: about_us
         name: "about_us"
-
-<MainScreen>:
-    FloatLayout:
-        CustomizedButton:
-            id: btn
-            text: 'Menu'
-            on_release: app.root.drop_down.open(self)
-            size_hint: None, None
-            size: self.texture_size
-            padding: (80, 20)
-            pos_hint: ({'top': 1})
-        CustomizedLabel:
-            text: "[b] INNOVATE [/b]"
-            font_size: min(root.height, root.width) / 20
-            pos_hint: ({'center_x': 0.35, 'center_y': 0.8})
-            markup: True
-        CustomizedLabel:
-            text: "[b] MOTIVATE [/b]"
-            font_size: min(root.height, root.width) / 20
-            pos_hint: ({'center_x': 0.40, 'center_y': 0.7})
-            markup: True
-        CustomizedLabel:
-            text: "[b] ACTIVATE [/b]"
-            font_size: min(root.height, root.width) / 20
-            pos_hint: ({'center_x': 0.45, 'center_y': 0.6})
-            markup: True
-        CustomizedLabel:
-            text: "[b] MYOVATE [/b]"
-            font_size: min(root.height, root.width) / 10
-            pos_hint: ({'center_x': 0.5, 'center_y': 0.5})
-            markup: True

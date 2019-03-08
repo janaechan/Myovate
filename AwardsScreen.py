@@ -17,7 +17,6 @@ class ScreenManagement(ScreenManager):
     def __init__(self, **kwargs):
         super(ScreenManagement, self).__init__(**kwargs)
 
-
 class AwardsScreen(Screen):
 
     def __init__(self, **kwargs):
@@ -59,8 +58,10 @@ class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
                                  RecycleBoxLayout):
     ''' Adds selection and focus behaviour to the view. '''
 
+
 class AwardPopup(Popup):
     pass
+
 
 class AwardApp(App):
 
@@ -72,3 +73,4 @@ if __name__ == '__main__':
     Window.fullscreen = 'auto'
     award = AwardApp()
     award.run()
+
