@@ -1,0 +1,34 @@
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+
+ScreenManagement:
+    transition: NoTransition()
+    AwardScreen:
+        id: award
+        name: 'award'
+
+<AwardScreen>
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'top'
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            Label:
+                text: 'My Awards'
+
+            GridLayout:
+
+<Award>
+    BoxLayout:
+        orientation: 'vertical'
+
+        Image:
+            id: award
+            source: root.source
+
+
+
+
+
+

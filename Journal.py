@@ -41,14 +41,8 @@ class JournalEntry(RecycleDataViewBehavior, BoxLayout):
             return self.parent.select_with_touch(self.index, touch)
 
     def apply_selection(self, rv, index, is_selected):
-        # print(index, is_selected, rv.data[index])
-        # self.selected = is_selected
         self.rv_data = rv.data
         self.index = index
-        print(self.index)
-        # if is_selected:
-        #     rv.data.pop(index)
-        #     rv.layout_manager.clear_selection()
 
 
 class AddJournalPopup(Popup):
@@ -56,21 +50,15 @@ class AddJournalPopup(Popup):
     index = 0
     date = datetime.date.today().strftime('%m/%d/%y')
 
-    def __init__(self, journal_data=None, **kwargs):
-        self.journal_data = {}
-        if journal_data is not None:
-            self.rv_data = journal_data.rv_data
-            self.index = journal_data.index
-            print(journal_data.rv_data)
+    def __init__(self, j_data=None, **kwargs):
+        if j_data is not None:
+            self.rv_data = j_data.rv_data
+            self.index = j_data.index
+            print(j_data.rv_data)
         super(AddJournalPopup, self).__init__(**kwargs)
 
 
-    def get_data(self):
-        return self.rv_data
-
-
 class ViewJournalPopup(Popup):
-
     rv_data = ObjectProperty()
     index = 0
 
@@ -78,16 +66,15 @@ class ViewJournalPopup(Popup):
         if j_data is not None:
             self.rv_data = j_data.rv_data
             self.index = j_data.index
-            print('index' + str(j_data.index))
         super(ViewJournalPopup, self).__init__(**kwargs)
 
 
 class EditJournalPopup(Popup):
     def __init__(self, j_data=None, **kwargs):
-        super(EditJournalPopup, self).__init__(**kwargs)
         if j_data is not None:
             self.rv_data = j_data.rv_data
             self.index = j_data.index
+        super(EditJournalPopup, self).__init__(**kwargs)
 
 
 class ScreenManagement(ScreenManager):
@@ -103,10 +90,11 @@ class JournalScreen(Screen):
         self.rv.data.insert(0, {'journal_date': j_date or 'default value',
                                 'journal_title': j_title or 'default value',
                                 'journal_text': j_text or 'default value'})
-        print('0:')
-        print(self.rv.data[0])
-        print('all: ')
-        print(self.rv.data)
+
+    def set(self, j_date, j_title, j_text, index):
+        self.rv.data[index] = {'journal_date': j_date or 'default value',
+                                'journal_title': j_title or 'default value',
+                                'journal_text': j_text or 'default value'}
 
 
 class JournalApp(App):

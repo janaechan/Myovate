@@ -2,13 +2,14 @@ import serial
 import warnings
 import serial.tools.list_ports
 import time
+import NewMyovate
 
 
 class Arduino():
 
     def __init__(self):
         self.baud_rate = 9600
-        self.data_points = 120
+        self.data_points = 1500
         self.cal_points = 70
         self.arduino = None
         self.cal = {}
@@ -37,9 +38,11 @@ class Arduino():
 
     def low_calibration(self, channel_num):
         final_data = []
-        while len(final_data) < self.data_points:
+        count = 0
+        while count < self.data_points:
             data = self.arduino.readline().split(',')
             final_data.append(int(data[channel_num]))
+            count = count + 1
         final_data.sort()
         low_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num] = [low_cal]
@@ -68,14 +71,16 @@ class Arduino():
         self.arduino.write('py,400,200')
         print(self.arduino.readline())
 
-    if __name__ == '__main__':
-        all_ar = find_arduino()
-        if len(all_ar) < 1:
-            print("No Arduino found")
-        else:
-            if len(all_ar) > 1:
-                print("Multiple Arduino")
-            set_arduino(all_ar[0])
-            test_comm()
-            time.sleep(15)
-            send_button_map(1, 50)
+
+if __name__ == '__main__':
+    a = Arduino()
+    all_ar = a.find_arduino()
+    if len(all_ar) < 1:
+        print("No Arduino found")
+    else:
+        if len(all_ar) > 1:
+            print("Multiple Arduino")
+        a.set_arduino(all_ar[0])
+        a.test_comm()
+        a.time.sleep(15)
+        a.send_button_map(1, 50)
