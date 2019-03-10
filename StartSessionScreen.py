@@ -117,7 +117,7 @@ class StartSessionScreen(Screen):
     def __init__(self, **kwargs):
         self.arduino = Arduino.Arduino()
         super(StartSessionScreen, self).__init__(**kwargs)
-        self.add_sensor_popup = AddSensorPopup(self.arduino)
+        self.add_sensor_popup = AddSensorPopup(None, self.arduino)
 
     def on_enter(self, *args):
         AddArduinoPopup(self.arduino).open()
@@ -206,8 +206,9 @@ class AddSensorPopup(Popup):
         self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
+        self.arduino.send_button_map(self.rv_data.channel_num, self.rv_data.but_mapping)
         self.dismiss()
-        return CalibrationModule.CalibrationSetupPopup(self.arduino).open()
+        return CalibrationModule.CalibrationSetupPopup(self.arduino, self.rv_data.channel_num).open()
 
     def cancel_adding_sensor(self):
         self.ids.sensor_name_input.text = ''

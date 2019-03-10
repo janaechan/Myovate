@@ -9,8 +9,9 @@ from kivy.lang import Builder
 
 
 class CalibrationSetupPopup(Popup):
-    def __init__(self, arduino=None, **kwargs):
+    def __init__(self, arduino=None, channel=None, **kwargs):
         self.arduino = arduino
+        self.channel = channel
         super(CalibrationSetupPopup, self).__init__(**kwargs)
 
 
@@ -18,11 +19,13 @@ class CalibrationRelaxPopup(Popup):
     progress_bar = ObjectProperty()
     cp = ObjectProperty()
 
-    def __init__(self, arduino=None, **kwargs):
+    def __init__(self, arduino=None, channel=None, **kwargs):
         self.arduino = arduino
+        self.channel = channel
         super(CalibrationRelaxPopup, self).__init__(**kwargs)
         self.progress_bar = ProgressBar()  # instance of ProgressBar created.
         Clock.schedule_once(self.progress_bar_start)
+        self.arduino.low_calibration(self.channel)
 
     def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
 
@@ -48,7 +51,7 @@ class CalibrationRelaxPopup(Popup):
         self.ids.layout.add_widget(ok_button)
 
     def clk(self, obj):
-        popup = CalibrationContractPopup(self.arduino)
+        popup = CalibrationContractPopup(self.arduino, self.channel)
         popup.open()
         return super(CalibrationRelaxPopup, self).dismiss()
         # self.dismiss()
@@ -61,11 +64,13 @@ class CalibrationContractPopup(Popup):
     progress_bar = ObjectProperty()
     cp = ObjectProperty()
 
-    def __init__(self, arduino=None, **kwargs):
+    def __init__(self, arduino=None, channel=None, **kwargs):
         self.arduino = arduino
+        self.channel = channel
         super(CalibrationContractPopup, self).__init__(**kwargs)
         self.progress_bar = ProgressBar()  # instance of ProgressBar created.
         Clock.schedule_once(self.progress_bar_start)
+        self.arduino.high_calibration(self.channel)
 
     def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
         self.cp.value = 1  # Initial value of progress_bar

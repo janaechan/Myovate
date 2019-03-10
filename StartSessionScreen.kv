@@ -328,9 +328,9 @@
             size: self.parent.width, self.parent.height/5
             text: 'Find Arduino'
             on_press:
-                # root.find_arduino_result()
+                root.find_arduino_result()
                 add_arduino_popup.dismiss()
-                Factory.ArduinoOptionsPopup(root.arduino, root.arduino.find_arduino()).open()
+
 
 <ArduinoOptionsPopup>:
     id: arduino_options_popup
@@ -367,7 +367,7 @@
     auto_dismiss: False
     title: 'No Arduino Found'
     separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
-    BoxLayout:
+    FloatLayout:
         CustomizedLabel:
             text: "No Arduino Found, please check connection and try again"
             halign: "center"
