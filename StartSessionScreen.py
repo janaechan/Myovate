@@ -70,6 +70,7 @@ class ArduinoOptionsPopup(Popup):
 
     def update_arduino(self):
         buts = ToggleButtonBehavior.get_widgets('arduino_buts')
+        a_id = ''
         for b in buts:
             if b.state == 'down':
                 a_id = b.text
@@ -89,8 +90,8 @@ class StartSessionScreen(Screen):
     def __init__(self, **kwargs):
         self.arduino = Arduino.Arduino()
         super(StartSessionScreen, self).__init__(**kwargs)
-        self.add_sensor_popup = AddSensorPopup()
         Clock.schedule_once(self.get_num_channels)
+        self.add_sensor_popup = AddSensorPopup(None, self.arduino)
 
     def on_enter(self, *args):
         AddArduinoPopup(self.arduino).open()
@@ -171,11 +172,12 @@ class AddSensorPopup(Popup):
     index = 0
     date = datetime.date.today().strftime('%m/%d/%y')
 
-    def __init__(self, sensor_data=None, **kwargs):
+    def __init__(self, sensor_data=None, arduino=None, **kwargs):
         if sensor_data is not None:
             self.rv_data = sensor_data.rv_data
             self.index = sensor_data.index
             print(sensor_data.rv_data)
+        self.arduino = arduino
         super(AddSensorPopup, self).__init__(**kwargs)
 
     def clear_text_input(self):
@@ -185,9 +187,9 @@ class AddSensorPopup(Popup):
         self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
+        self.arduino.send_button_map(self.rv_data.channel_num, self.rv_data.but_mapping)
         self.dismiss()
-
-        return CalibrationModule.CalibrationSetupPopup().open()
+        return CalibrationModule.CalibrationSetupPopup(self.arduino, self.rv_data.channel_num).open()
 
     def cancel_adding_sensor(self):
         self.ids.channel_num_input.text = ''

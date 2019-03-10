@@ -23,7 +23,7 @@
             text: 'Begin Calibration'
             on_press:
                 calibration_setup_pop.dismiss()
-                Factory.CalibrationRelaxPopup().open()
+                Factory.CalibrationRelaxPopup(root.arduino, root.channel).open()
 
 
 <CalibrationRelaxPopup>:

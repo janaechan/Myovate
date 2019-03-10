@@ -29,18 +29,18 @@ class Arduino():
         #super(Arduino, self).__init__(**kwargs)
 
     def find_arduino(self):
-        return ['1']
-        # self.arduino_ports = [
-        #     p.device
-        #     for p in serial.tools.list_ports.comports()
-        #     if 'USB Serial' in p.description
-        # ]
-        # return self.arduino_ports
+        self.arduino_ports = [
+            p.device
+            for p in serial.tools.list_ports.comports()
+            if 'USB Serial' in p.description
+        ]
+        print('ar' + str(self.arduino_ports))
+        return self.arduino_ports
 
     def set_arduino(self, ser):
+        self.ser = ser
+        self.arduino = serial.Serial(self.ser, self.baud_rate, timeout=0.1)
         return True
-        # self.ser = ser
-        # self.arduino = serial.Serial(self.ser, self.baud_rate, timeout=0.1)
 
     def get_data(self):
         return self.arduino.readline().split(',')
@@ -54,7 +54,7 @@ class Arduino():
     def low_calibration(self, channel_num):
         final_data = []
         count = 0
-        while count < self.data_points:
+        while self.count < self.data_points:
             data = self.get_data()
             final_data.append(int(data[channel_num]))
             count = count + 1
@@ -65,9 +65,11 @@ class Arduino():
 
     def high_calibration(self, channel_num):
         final_data = []
-        while len(final_data) < self.data_points:
+        count = 0
+        while self.count < self.data_points:
             data = self.get_data()
             final_data.append(int(data[channel_num]))
+            count = count + 1
         final_data.sort()
         high_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num].append(high_cal)
@@ -81,8 +83,13 @@ class Arduino():
         self.arduino.write(sends)
 
     def send_button_map(self, channel_num, button):
-        self.button_info[channel_num] = button
-        sends = 'py,' + str(channel_num) + "," + str(button)
+        code = ''
+        if len(button) == 1:
+            code = button
+        else:
+            code = self.button_code[button]
+        self.button_info[channel_num] = code
+        sends = 'py,' + str(channel_num) + "," + str(code)
         sends = sends.encode()
         self.arduino.write(sends)
 
