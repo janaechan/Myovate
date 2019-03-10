@@ -11,6 +11,102 @@ from kivy.garden.graph import MeshLinePlot
 from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
 import CalibrationModule
 import MicrophoneThread
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
+from kivy.uix.label import Label
+import CalibrationModule
+import audioop
+import pyaudio
+import Arduino
+from kivy.factory import Factory
+
+
+levels = []  # store levels of microphone
+
+
+def get_microphone_level():
+    """
+    source: http://stackoverflow.com/questions/26478315/getting-volume-levels-from-pyaudio-for-use-in-arduino
+    audioop.max alternative to audioop.rms
+    """
+    chunk = 100
+    FORMAT = pyaudio.paInt16
+    CHANNELS = 1
+    RATE = 30000
+    p = pyaudio.PyAudio()
+
+    s = p.open(format=FORMAT,
+               channels=CHANNELS,
+               rate=RATE,
+               input=True,
+               frames_per_buffer=chunk)
+    global levels
+    while True:
+        data = s.read(chunk)
+        mx = audioop.rms(data, 2)
+        if len(levels) >= 100:
+            levels = []
+        levels.append(mx)
+
+
+class AddArduinoPopup(Popup):
+
+    def __init__(self, arduino=None, **kwargs):
+        self.arduino = arduino
+        super(AddArduinoPopup, self).__init__(**kwargs)
+
+    def find_arduino_result(self):
+        ops = self.arduino.find_arduino()
+        if len(ops) == 0:
+            NoArduinoFoundPopup().open()
+        else:
+            self.add_arduino_popup.dismiss()
+            ArduinoOptionsPopup(self.arduino, ops).open()
+
+
+class NoArduinoFoundPopup(Popup):
+    pass
+
+
+class ArduinoConnectedPopup(Popup):
+    pass
+
+
+class ArduinoUnsuccessfulPopup(Popup):
+
+    def __init__(self, arduino=None, arduino_ops=None, **kwargs):
+        self.arduino = arduino
+        self.arduino_ops = arduino_ops
+        super(ArduinoUnsuccessfulPopup, self).__init__(**kwargs)
+
+
+class ArduinoOptionsPopup(Popup):
+
+    def __init__(self, arduino=None, arduino_ops=None, **kwargs):
+        self.arduino = arduino
+        self.arduino_ops = arduino_ops
+        super(ArduinoOptionsPopup, self).__init__(**kwargs)
+        self.add_arduinos()
+
+    def add_arduinos(self):
+        for a in range(len(self.arduino_ops)):
+            if a == 0:
+                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts', state='down')
+            else:
+                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts'
+            self.arduinos.add_widget(but)
+
+    def update_arduino(self):
+        buts = ToggleButtonBehavior.get_widgets('arduino_buts')
+        for b in buts:
+            if b.state == 'down':
+                a_id = b.text
+                print(b.text)
+        self.dismiss()
+        if self.arduino.set_arduino(a_id):
+            ArduinoConnectedPopup().open()
+        else:
+            ArduinoUnsuccessfulPopup(self.arduino, self.arduino_ops).open()
 
 
 class StartSessionScreen(Screen):
@@ -18,8 +114,12 @@ class StartSessionScreen(Screen):
     session_date = datetime.date.today().strftime('%m/%d/%y')
 
     def __init__(self, **kwargs):
+        self.arduino = Arduino.Arduino()
         super(StartSessionScreen, self).__init__(**kwargs)
         self.add_sensor_popup = AddSensorPopup()
+
+    def on_enter(self, *args):
+        AddArduinoPopup(self.arduino).open()
 
     def insert(self, sensor_name, sensor_loc, but_mapping):
         self.rv.data.insert(0, {'sensor_name': sensor_name or 'default value',
@@ -28,8 +128,8 @@ class StartSessionScreen(Screen):
                                 'need_calibration': True})
 
     def clear_text_input(self):
-        self.manager.get_screen('session_history').insert(self.ids.session_name_input.text,
-                                                          self.ids.session_date_input.text, self.ids.rv.data)
+        # self.manager.get_screen('session_history').insert(self.ids.session_name_input.text,
+        #                                                   self.ids.session_date_input.text, self.ids.rv.data)
         self.manager.get_screen('running_session').insert(self.ids.session_name_input.text,
                                                           self.ids.session_date_input.text, self.ids.rv.data)
 

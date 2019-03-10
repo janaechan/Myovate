@@ -50,7 +50,9 @@
             text: "End Session"
             pos_hint: ({'center_x': 0.5, 'center_y': 0.05})
             padding: (80, 20)
-            #on_press: root.manager.get_screen('progress').insert(session_name_input.text, rv.data)
+            on_press:
+                root.manager.get_screen('session_history').insert(session_name_input.text, session_date_input.text, rv.data)
+                root.manager.current = "progress"
 
 <RunningScreenRow>:
     id: row

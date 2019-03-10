@@ -18,23 +18,27 @@
             BoxLayout:
                 orientation: 'vertical'
 
-                Label:
+                CustomizedLabel:
                     text: 'My Journal'
                     size_hint: 1, 0.1
-
-                Button:
-                    text: 'Add Journal Entry'
+                BoxLayout:
                     size_hint: 1, 0.1
-                    on_press: Factory.AddJournalPopup().open()
+                    orientation: 'horizontal'
+                    Label:
+
+                    CustomizedButton:
+                        text: 'Add Journal Entry'
+                        on_press: Factory.AddJournalPopup().open()
+                    Label:
 
                 BoxLayout:
                     orientation: "horizontal"
                     size_hint: 1, 0.1
-                    Label:
+                    CustomizedLabel:
                         text: "Date"
-                    Label:
+                    CustomizedLabel:
                         text: "Journal Title"
-                    Label:
+                    CustomizedLabel:
                         text: "Edit Journal Entry"
 
                 RecycleView:
@@ -44,7 +48,7 @@
                     bar_width: dp(10)
                     viewclass: 'JournalEntry'
                     SelectableRecycleBoxLayout:
-                        default_size: None, dp(150)
+                        default_size: None, dp(100)
                         default_size_hint: 1, None
                         size_hint_y: None
                         height: self.minimum_height
@@ -62,16 +66,24 @@
     BoxLayout:
         orientation:
         Label:
+            size_hint: 0.075, 1
+        CustomizedLabel:
             text: root.journal_date
-        Button:
+        Label:
+            size_hint: 0.15, 1
+
+        CustomizedButton:
             text: root.journal_title
             on_press:
                 Factory.ViewJournalPopup(root).open()
-        Button:
+        Label:
+            size_hint: 0.15, 1
+        CustomizedButton:
             text: 'Edit'
             on_press:
                 Factory.EditJournalPopup(root).open()
-
+        Label:
+            size_hint: 0.075, 1
 
 <ViewJournalPopup>:
     id: view_journal_pop
@@ -80,9 +92,9 @@
     auto_dismiss: False
     BoxLayout:
         orientation: 'vertical'
-        Label:
+        CustomizedLabel:
             text: root.rv_data[root.index]['journal_text'] if root.rv_data else ''
-        Button:
+        CustomizedButton:
             size_hint: 1, 0.1
             text: 'Back'
             on_press: view_journal_pop.dismiss()
@@ -98,7 +110,7 @@
             id: journal_title_box
             orientation: "horizontal"
             size_hint: 1, 0.1
-            Label:
+            CustomizedLabel:
                 id: journal_title
                 text: "Journal Title"
 
@@ -109,7 +121,7 @@
             id: journal_date_box
             orientation: 'horizontal'
             size_hint: 1, 0.1
-            Label:
+            CustomizedLabel:
                 id: journal_date
                 text: "Date"
 
@@ -123,13 +135,13 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 1, 0.1
-            Button:
+            CustomizedButton:
                 id: delete_journal
                 text: 'Back'
                 on_press:
                     edit_journal_pop.dismiss()
 
-            Button:
+            CustomizedButton:
                 id: submit_journal
                 text: "Save Journal Entry"
                 on_press:
@@ -150,7 +162,7 @@
             id: journal_title_box
             orientation: "horizontal"
             size_hint: 1, 0.1
-            Label:
+            CustomizedLabel:
                 id: journal_title
                 text: "Journal Title"
 
@@ -161,7 +173,7 @@
             id: journal_date_box
             orientation: 'horizontal'
             size_hint: 1, 0.1
-            Label:
+            CustomizedLabel:
                 id: journal_date
                 text: "Date"
 
@@ -176,13 +188,13 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 1, 0.1
-            Button:
+            CustomizedButton:
                 id: delete_journal
                 text: 'Delete Journal Entry'
                 on_press:
                     add_journal_pop.dismiss()
 
-            Button:
+            CustomizedButton:
                 id: submit_journal
                 text: "Save Journal Entry"
                 on_press:
