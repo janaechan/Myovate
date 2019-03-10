@@ -40,9 +40,7 @@ if __name__ == '__main__':
     # TODO create arduino instance
     # TODO start arduino thread when you start new session so you can call find_, set_, get_data
     # levels = []  # store levels of microphone
-    get_level_thread = Thread(target=MicrophoneThread.get_microphone_level)
-    get_level_thread.daemon = True
-    get_level_thread.start()
+
     # get_arduino_thread = Thread(target=Arduino)
     Window.fullscreen = 'auto'
     NewMyovateApp().run()

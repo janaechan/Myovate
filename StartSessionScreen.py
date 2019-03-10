@@ -5,6 +5,7 @@ from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
+from threading import Thread
 from kivy.uix.togglebutton import ToggleButton
 from kivy.clock import Clock
 from kivy.garden.graph import MeshLinePlot
@@ -17,36 +18,9 @@ from kivy.uix.label import Label
 import CalibrationModule
 import audioop
 import pyaudio
+import GraphThread
 import Arduino
 from kivy.factory import Factory
-
-
-levels = []  # store levels of microphone
-
-
-def get_microphone_level():
-    """
-    source: http://stackoverflow.com/questions/26478315/getting-volume-levels-from-pyaudio-for-use-in-arduino
-    audioop.max alternative to audioop.rms
-    """
-    chunk = 100
-    FORMAT = pyaudio.paInt16
-    CHANNELS = 1
-    RATE = 30000
-    p = pyaudio.PyAudio()
-
-    s = p.open(format=FORMAT,
-               channels=CHANNELS,
-               rate=RATE,
-               input=True,
-               frames_per_buffer=chunk)
-    global levels
-    while True:
-        data = s.read(chunk)
-        mx = audioop.rms(data, 2)
-        if len(levels) >= 100:
-            levels = []
-        levels.append(mx)
 
 
 class AddArduinoPopup(Popup):
@@ -58,14 +32,16 @@ class AddArduinoPopup(Popup):
     def find_arduino_result(self):
         ops = self.arduino.find_arduino()
         if len(ops) == 0:
-            NoArduinoFoundPopup().open()
+            NoArduinoFoundPopup(self.arduino).open()
         else:
             self.add_arduino_popup.dismiss()
             ArduinoOptionsPopup(self.arduino, ops).open()
 
 
 class NoArduinoFoundPopup(Popup):
-    pass
+    def __init__(self, arduino=None, **kwargs):
+        self.arduino = arduino
+        super(NoArduinoFoundPopup, self).__init__(**kwargs)
 
 
 class ArduinoConnectedPopup(Popup):
@@ -116,6 +92,7 @@ class StartSessionScreen(Screen):
 
     def __init__(self, **kwargs):
         self.arduino = Arduino.Arduino()
+        self.get_graph_thread = None
         super(StartSessionScreen, self).__init__(**kwargs)
         self.add_sensor_popup = AddSensorPopup(None, self.arduino)
 
@@ -138,6 +115,11 @@ class StartSessionScreen(Screen):
         self.ids.rv.data = []
         self.parent.current = 'running_session'
 
+    def start_graph_thread(self):
+        self.get_graph_thread = Thread(target=GraphThread.get_data(self.arduino))
+        self.get_graph_thread.daemon = True
+        self.get_graph_thread.start()
+
 
 class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
     ''' Add selection support to the Button '''
@@ -150,7 +132,7 @@ class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
     def __init__(self, **kwargs):
         super(StartSessionRow, self).__init__(**kwargs)
         self.plot = MeshLinePlot(color=[1, 0, 0, 1])
-        # self.levels = []  # store levels of microphone
+        self.levels = []  # store levels of microphone
 
     def refresh_view_attrs(self, rv, index, data):
         ''' Catch and handle the view changes '''
@@ -203,12 +185,13 @@ class AddSensorPopup(Popup):
         super(AddSensorPopup, self).__init__(**kwargs)
 
     def clear_text_input(self):
+        self.arduino.send_button_map(int(self.ids.channel_num.text), self.ids.but_mapping_input.text)
+        CalibrationModule.CalibrationSetupPopup(self.arduino, int(self.ids.channel_num.text)).open()
         self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
-        self.arduino.send_button_map(self.rv_data.channel_num, self.rv_data.but_mapping)
+        self.ids.channel_num.text = ''
         self.dismiss()
-        return CalibrationModule.CalibrationSetupPopup(self.arduino, self.rv_data.channel_num).open()
 
     def cancel_adding_sensor(self):
         self.ids.sensor_name_input.text = ''

@@ -322,14 +322,20 @@
             text: 'Find your Arduino to connect to.'
             halign: "center"
             pos_hint: {'center_x': 0.5, 'center_y': 0.6}
-
         CustomizedButton:
-            pos: (self.parent.pos[0], self.parent.pos[1])
-            size: self.parent.width, self.parent.height/5
+            pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
+            size: self.parent.width/2, self.parent.height/5
             text: 'Find Arduino'
             on_press:
                 root.find_arduino_result()
                 add_arduino_popup.dismiss()
+        CustomizedButton:
+            pos: self.parent.pos
+            size: self.parent.width/2, self.parent.height/5
+            text: 'CANCEL'
+            on_press:
+                add_arduino_popup.dismiss()
+                app.root.current='main'
 
 
 <ArduinoOptionsPopup>:
@@ -354,8 +360,15 @@
             #size_y: self.parent.height/8
             #size_hint_y: None
         CustomizedButton:
-            pos_hint: {'center_x': 0.5}
-            size: self.parent.width/2, self.parent.height/8
+            pos: self.parent.pos
+            size: self.parent.width/2, self.parent.height/5
+            text: 'Cancel'
+            on_press:
+                app.root.current = 'main'
+                arduino_options_popup.dismiss()
+        CustomizedButton:
+            pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
+            size: self.parent.width/2, self.parent.height/5
             text: 'Submit'
             #size_hint: 1, 0.1
             on_press:
@@ -374,12 +387,20 @@
             pos_hint: {'center_x': 0.5, 'center_y': 0.6}
 
         CustomizedButton:
-            pos: (self.parent.pos[0], self.parent.pos[1])
-            size: self.parent.width, self.parent.height/5
+            pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
+            size: self.parent.width/2, self.parent.height/5
             size_hint: None, None
             text: 'OK'
             on_press:
                 no_arduino_found_popup.dismiss()
+                Factory.AddArduinoPopup(root.arduino).open()
+        CustomizedButton:
+            pos: self.parent.pos
+            size: self.parent.width/2, self.parent.height/5
+            text: 'Cancel'
+            on_press:
+                no_arduino_found_popup.dismiss()
+                app.root.current = 'main'
 
 <ArduinoConnectedPopup>:
     id: arduino_connected_popup
@@ -399,6 +420,7 @@
             size_hint: None, None
             text: 'OK'
             on_press:
+                app.root.get_screen('start_session').start_graph_thread()
                 arduino_connected_popup.dismiss()
 
 <ArduinoUnsuccessfulPopup>:
