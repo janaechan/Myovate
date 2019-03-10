@@ -4,38 +4,13 @@ import datetime
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
+from kivy.uix.textinput import TextInput
+from kivy.uix.togglebutton import ToggleButton
 from kivy.clock import Clock
 from kivy.garden.graph import MeshLinePlot
+from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
 import CalibrationModule
-import audioop
-import pyaudio
-
-levels = []  # store levels of microphone
-
-
-def get_microphone_level():
-    """
-    source: http://stackoverflow.com/questions/26478315/getting-volume-levels-from-pyaudio-for-use-in-arduino
-    audioop.max alternative to audioop.rms
-    """
-    chunk = 100
-    FORMAT = pyaudio.paInt16
-    CHANNELS = 1
-    RATE = 30000
-    p = pyaudio.PyAudio()
-
-    s = p.open(format=FORMAT,
-               channels=CHANNELS,
-               rate=RATE,
-               input=True,
-               frames_per_buffer=chunk)
-    global levels
-    while True:
-        data = s.read(chunk)
-        mx = audioop.rms(data, 2)
-        if len(levels) >= 100:
-            levels = []
-        levels.append(mx)
+import MicrophoneThread
 
 
 class StartSessionScreen(Screen):
@@ -107,7 +82,7 @@ class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
         Clock.unschedule(self.get_value)
 
     def get_value(self, dt):
-        self.plot.points = [(i, j / 5) for i, j in enumerate(levels)]
+        self.plot.points = [(i, j / 5) for i, j in enumerate(MicrophoneThread.levels)]
 
 
 class AddSensorPopup(Popup):
@@ -154,6 +129,27 @@ class AddSensorPopup(Popup):
         # ensure the size is okay
         if len(matches) <= 3:
             self.parent.height = 30
+
+    def reset_state(self):
+        arrow_but = ToggleButtonBehavior.get_widgets('arrows')
+        for but in arrow_but:
+            but.state = 'normal'
+
+
+class ButtonMapping(TextInput):
+    def insert_text(self, substring, from_undo=False):
+        substring = substring[:1 - len(self.text)]
+        self.parent.parent.parent.parent.reset_state()
+        return super(ButtonMapping, self).insert_text(substring, from_undo=from_undo)
+
+
+class ToggleArrow(ToggleButton):
+
+    def on_state(self, widget, value):
+        # clear any text in but_mapping TextInput
+        if value == 'down':
+            add_sensor_popup = self.parent.parent.parent.parent
+            add_sensor_popup.ids.but_mapping_input.text = ''
 
 
 class ConfirmDeletePopup(Popup):

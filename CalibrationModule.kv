@@ -14,14 +14,12 @@
         CustomizedButton:
             pos: self.parent.pos
             size: self.parent.width/2, self.parent.height/5
-            size_hint: None, None
             text: 'Cancel Calibration'
             on_press:
                 calibration_setup_pop.dismiss()
         CustomizedButton:
             pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
             size: self.parent.width/2, self.parent.height/5
-            size_hint: None, None
             text: 'Begin Calibration'
             on_press:
                 calibration_setup_pop.dismiss()
@@ -53,7 +51,6 @@
         CustomizedButton:
             pos_hint: {'center_x': 0.25, 'center_y': 0.10}
             size: self.parent.width/2, self.parent.height/5
-            size_hint: None, None
             text: 'Cancel Calibration'
             on_press:
                 calibration_relax_pop.dismiss()
@@ -84,7 +81,6 @@
         CustomizedButton:
             pos_hint: {'center_x': 0.25, 'center_y': 0.10}
             size: self.parent.width/2, self.parent.height/5
-            size_hint: None, None
             text: 'Cancel Calibration'
             on_press:
                 calibration_contract_pop.dismiss()
@@ -97,14 +93,13 @@
     FloatLayout:
         id: layout
         CustomizedLabel:
-            text: "Calibration Complete. Press 'Done' to add another sensor or start your session."
+            text: "Calibration Complete. \nPress 'Done' to add another sensor or start your session."
             multiline: True
             halign: "center"
-            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
         CustomizedButton:
             pos_hint: {'center_x': 0.5, 'center_y': 0.10}
             size: self.parent.width/2, self.parent.height/5
-            size_hint: None, None
             text: 'Done'
             on_press:
                 calibration_complete_pop.dismiss()

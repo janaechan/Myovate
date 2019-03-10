@@ -5,8 +5,6 @@
             id: btn
             text: 'Menu'
             on_release: app.root.drop_down.open(self)
-            size_hint: None, None
-            size: self.texture_size
             padding: (80, 20)
             pos_hint: ({'top': 1})
 
@@ -51,9 +49,7 @@
         CustomizedButton:
             text: "End Session"
             pos_hint: ({'center_x': 0.5, 'center_y': 0.05})
-            size: self.texture_size
             padding: (80, 20)
-            size_hint: None, None
             #on_press: root.manager.get_screen('progress').insert(session_name_input.text, rv.data)
 
 <RunningScreenRow>:
@@ -61,16 +57,13 @@
     orientation: 'vertical'
     canvas.before:
         Color:
-            #rgba: 0.5, 0.5, 0.5, 1
-            rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
-            #rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 1, 1)
+            rgba: (0, 0, 0, 1)
         Rectangle:
             size: self.size
             pos: self.pos
     sensor_name: ''
     sensor_loc: ''
     but_mapping: ''
-    #need_calibration: ''
     BoxLayout:
         size_hint: [1, 0.2]
         orientation: 'horizontal'
@@ -80,8 +73,6 @@
             text: 'Sensor Location: ' + root.sensor_loc
         CustomizedLabel:
             text: 'Mapped to: ' + root.but_mapping
-    #    CustomizedLabel:
-    #        text: 'Calibrated? ' + 'NO' if root.need_calibration else 'YES'
 
     BoxLayout:
         orientation: 'horizontal'
@@ -89,21 +80,21 @@
             id: graph
             xlabel: ""
             ylabel: "Level"
-            x_ticks_minor:5
-            x_tics_major:25
-            y_ticks_major:50
+            x_ticks_minor: 5
+            x_tics_major: 25
+            y_ticks_major: 50
             x_grid: True
             y_grid: True
             padding: 5
             pos: root.pos
         BoxLayout:
             orientation: 'vertical'
-            size_hint: [0.5, .5]
-            CustomizedButton:
-                text: "START"
-                bold: True
+            size_hint: [.3, .8]
+            Button:
+                text: "Begin monitoring signal"
+                font_size: '20sp'
                 on_press: root.start()
-            CustomizedButton:
-                text: "STOP"
-                bold: True
+            Button:
+                text: "Stop monitoring signal"
+                font_size: '20sp'
                 on_press: root.stop()

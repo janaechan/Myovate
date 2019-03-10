@@ -4,6 +4,7 @@ from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.garden.graph import MeshLinePlot
 from kivy.clock import Clock
+import MicrophoneThread
 import Misc
 
 
@@ -74,4 +75,4 @@ class RunningScreenRow(RecycleDataViewBehavior, BoxLayout):
         Clock.unschedule(self.get_value)
 
     def get_value(self, dt):
-        self.plot.points = [(i, j / 5) for i, j in enumerate(levels)]
+        self.plot.points = [(i, j / 5) for i, j in enumerate(MicrophoneThread.levels)]
