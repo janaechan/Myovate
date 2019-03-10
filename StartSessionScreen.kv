@@ -1,7 +1,7 @@
 <ToggleArrow>:
-    size: self.texture_size
+    size: self.parent.width/15, self.parent.height/15
     size_hint: None, None
-    padding: (5, 5)
+    #padding: (5, 5)
     group: 'arrows'
 
 <StartSessionScreen>:
@@ -164,7 +164,7 @@
             pos_hint: ({'center_x': 0.55, 'center_y': 0.9})
         CustomizedLabel:
             id: sensor_name_id
-            text: "Sensor Name"
+            text: "Sensor Name:"
             size_hint_y: None
             pos_hint: ({'center_x': 0.20, 'center_y': 0.80})
         TextInput:
@@ -177,7 +177,7 @@
             pos_hint: ({'center_x': 0.55, 'center_y': 0.80})
         CustomizedLabel:
             id: sensor_loc_id
-            text: "Sensor Location"
+            text: "Sensor Location:"
             size_hint_y: None
             pos_hint: ({'center_x': 0.20, 'center_y': 0.70})
         TextInput:
@@ -216,12 +216,12 @@
             id: but_mapping_id
             text: "Enter either one key or choose an arrow to map to:"
             size_hint_y: None
-            pos_hint: ({'center_x': 0.38, 'center_y': 0.5})
+            pos_hint: ({'center_x': 0.38, 'center_y': 0.47})
         CustomizedLabel:
             id: but_mapping_id
             text: "Map to: "
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.5})
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.4})
         ButtonMapping:
             id: but_mapping_input
             text: root.rv_data[root.index]['but_mapping'] if root.rv_data else ''
@@ -231,7 +231,7 @@
             multiline: False
             input_type: 'text'
             keyboard_suggestions: True
-            pos_hint: ({'center_x': 0.555, 'center_y': 0.30})
+            pos_hint: ({'center_x': 0.555, 'center_y': 0.4})
         ToggleArrow:
             id: left_toggle
             text: 'LEFT'

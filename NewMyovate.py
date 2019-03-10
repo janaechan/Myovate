@@ -20,7 +20,6 @@ import ProgressScreen
 import MicrophoneThread
 import Misc
 
-
 # class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
 #                                  RecycleBoxLayout):
 #     ''' Adds selection and focus behaviour to the view. '''
