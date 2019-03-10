@@ -28,7 +28,6 @@ class CalibrationRelaxPopup(Popup):
         self.arduino.low_calibration(self.channel)
 
     def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
-
         self.cp.value = 1  # Initial value of progress_bar
 
     def next(self, dt):  # Updates Project Bar

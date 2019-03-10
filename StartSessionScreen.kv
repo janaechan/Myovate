@@ -37,7 +37,6 @@
             id: session_date_input
             text: root.session_date
             focus: True
-            #input_filter: lambda text, from_undo: text[:5 - len(self.text)]
             height: self.minimum_height
             size_hint: 0.3, None
             multiline: False
@@ -156,7 +155,8 @@
         TextInput:
             id: channel_num_input
             text: ''
-            input_filter: lambda text, from_undo: text[:1 - len(self.text)]
+            input_filter: 'float'
+            #input_filter: lambda text, from_undo: text[:1 - len(self.text)]
             focus: True
             height: self.minimum_height
             size_hint: 0.3, None
@@ -179,7 +179,7 @@
             id: sensor_loc_id
             text: "Sensor Location"
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.65})
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.70})
         TextInput:
             id: sensor_loc_input
             text: root.rv_data[root.index]['sensor_loc'] if root.rv_data else ''
@@ -187,12 +187,12 @@
             height: self.minimum_height
             size_hint: 0.3, None
             multiline: False
-            pos_hint: ({'center_x': 0.55, 'center_y': 0.65})
+            pos_hint: ({'center_x': 0.55, 'center_y': 0.70})
         CustomizedLabel:
             id: but_type_id
             text: "Button Type:"
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.50})
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.60})
         ToggleButton:
             id: game_pad_toggle
             text: 'Game pad'
@@ -201,7 +201,7 @@
             size: self.texture_size
             padding: (20, 5)
             size_hint: None, None
-            pos_hint: ({'center_x': 0.70, 'center_y': 0.50})
+            pos_hint: ({'center_x': 0.70, 'center_y': 0.60})
         ToggleButton:
             id: keyboard_toggle
             text: 'Keyboard'
@@ -211,17 +211,17 @@
             size: self.texture_size
             padding: (20, 5)
             size_hint: None, None
-            pos_hint: ({'center_x': 0.45, 'center_y': 0.50})
+            pos_hint: ({'center_x': 0.45, 'center_y': 0.60})
         CustomizedLabel:
             id: but_mapping_id
             text: "Enter either one key or choose an arrow to map to:"
             size_hint_y: None
-            pos_hint: ({'center_x': 0.38, 'center_y': 0.38})
+            pos_hint: ({'center_x': 0.38, 'center_y': 0.5})
         CustomizedLabel:
             id: but_mapping_id
             text: "Map to: "
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.30})
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.5})
         ButtonMapping:
             id: but_mapping_input
             text: root.rv_data[root.index]['but_mapping'] if root.rv_data else ''
@@ -232,7 +232,6 @@
             input_type: 'text'
             keyboard_suggestions: True
             pos_hint: ({'center_x': 0.555, 'center_y': 0.30})
-            on_text: root.on_text()
         ToggleArrow:
             id: left_toggle
             text: 'LEFT'
@@ -263,8 +262,8 @@
             padding: (20, 10)
             pos_hint: ({'center_x': 0.70, 'center_y': 0.15})
             on_press:
-                app.root.get_screen('start_session').insert(sensor_name_input.text, sensor_loc_input.text, but_mapping_input.text, channel_num_input.text) if sensor_name_input.text and sensor_loc_input.text and but_mapping_input.text and channel_num_input.text else print('Cannot Calibrate Sensor')
-                root.clear_text_input() if sensor_name_input.text and sensor_loc_input.text and but_mapping_input.text and channel_num_input.text else Factory.MissingFieldPopup().open()
+                app.root.get_screen('start_session').insert(sensor_name_input.text, sensor_loc_input.text, but_mapping_input.text, channel_num_input.text) if root.check_for_missing_fields() else print('Cannot Calibrate Sensor')
+                root.clear_text_input() if root.check_for_missing_fields() else Factory.MissingFieldPopup().open()
 
 <ConfirmDeletePopup>:
     id: confirm_delete_popup

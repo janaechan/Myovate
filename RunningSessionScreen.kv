@@ -66,9 +66,12 @@
     sensor_name: ''
     sensor_loc: ''
     but_mapping: ''
+    channel_num: ''
     BoxLayout:
         size_hint: [1, 0.2]
         orientation: 'horizontal'
+        CustomizedLabel:
+            text: 'Sensor Num: ' + root.channel_num
         CustomizedLabel:
             text: 'Sensor Name: ' + root.sensor_name
         CustomizedLabel:
