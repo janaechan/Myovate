@@ -7,6 +7,7 @@ from kivy.event import EventDispatcher
 from kivy.uix.widget import Widget
 
 
+
 class Arduino():
 
     def __init__(self, **kwargs):
@@ -17,6 +18,7 @@ class Arduino():
         self.cal = {}
         self.ser = None
         self.arduino_ports = None
+        self.record = True
         self.neg_electrode = str(1 << 11)
         self.button_info = {}
         self.button_code = {
@@ -34,7 +36,6 @@ class Arduino():
             for p in serial.tools.list_ports.comports()
             if 'USB Serial' in p.description
         ]
-        print('ar' + str(self.arduino_ports))
         return self.arduino_ports
 
     def set_arduino(self, ser):
@@ -52,6 +53,7 @@ class Arduino():
         self.arduino.write(send)
 
     def low_calibration(self, channel_num):
+        self.record = False
         final_data = []
         count = 0
         while self.count < self.data_points:
@@ -61,9 +63,11 @@ class Arduino():
         final_data.sort()
         low_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num] = [low_cal]
+        self.record = True
         return low_cal
 
     def high_calibration(self, channel_num):
+        self.record = False
         final_data = []
         count = 0
         while self.count < self.data_points:
@@ -73,6 +77,7 @@ class Arduino():
         final_data.sort()
         high_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num].append(high_cal)
+        self.record = True
         return high_cal
 
     def send_calibration(self, channel_num):

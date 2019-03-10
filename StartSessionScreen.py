@@ -5,6 +5,7 @@ from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
+from threading import Thread
 from kivy.uix.togglebutton import ToggleButton
 from kivy.clock import Clock
 from kivy.garden.graph import MeshLinePlot
@@ -16,7 +17,7 @@ from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
 from kivy.uix.label import Label
 import CalibrationModule
 import audioop
-import pyaudio
+import GraphThread
 import Arduino
 from kivy.factory import Factory
 
@@ -30,14 +31,16 @@ class AddArduinoPopup(Popup):
     def find_arduino_result(self):
         ops = self.arduino.find_arduino()
         if len(ops) == 0:
-            NoArduinoFoundPopup().open()
+            NoArduinoFoundPopup(self.arduino).open()
         else:
             self.add_arduino_popup.dismiss()
             ArduinoOptionsPopup(self.arduino, ops).open()
 
 
 class NoArduinoFoundPopup(Popup):
-    pass
+    def __init__(self, arduino=None, **kwargs):
+        self.arduino = arduino
+        super(NoArduinoFoundPopup, self).__init__(**kwargs)
 
 
 class ArduinoConnectedPopup(Popup):
@@ -89,6 +92,7 @@ class StartSessionScreen(Screen):
 
     def __init__(self, **kwargs):
         self.arduino = Arduino.Arduino()
+        self.get_graph_thread = None
         super(StartSessionScreen, self).__init__(**kwargs)
         Clock.schedule_once(self.get_num_channels)
         self.add_sensor_popup = AddSensorPopup(None, self.arduino)
@@ -110,6 +114,11 @@ class StartSessionScreen(Screen):
         self.ids.rv.data = []
         self.parent.current = 'running_session'
 
+    def start_graph_thread(self):
+        self.get_graph_thread = Thread(target=GraphThread.get_data(self.arduino))
+        self.get_graph_thread.daemon = True
+        self.get_graph_thread.start()
+
     def get_num_channels(self, dt):
         try:
             self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 1 and {}'.format(
@@ -129,7 +138,7 @@ class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
     def __init__(self, **kwargs):
         super(StartSessionRow, self).__init__(**kwargs)
         self.plot = MeshLinePlot(color=[1, 0, 0, 1])
-        # self.levels = []  # store levels of microphone
+        self.levels = []  # store levels of microphone
 
     def refresh_view_attrs(self, rv, index, data):
         ''' Catch and handle the view changes '''
@@ -181,15 +190,13 @@ class AddSensorPopup(Popup):
         super(AddSensorPopup, self).__init__(**kwargs)
 
     def clear_text_input(self):
-        print('clear_text_input')
-        print(self.ids.channel_num_input.text)
+        self.arduino.send_button_map(int(self.ids.channel_num_input.text), self.ids.but_mapping_input.text)
+        CalibrationModule.CalibrationSetupPopup(self.arduino, int(self.ids.channel_num_input.text)).open()
         self.ids.channel_num_input.text = ''
         self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
-        self.arduino.send_button_map(self.rv_data.channel_num, self.rv_data.but_mapping)
         self.dismiss()
-        return CalibrationModule.CalibrationSetupPopup(self.arduino, self.rv_data.channel_num).open()
 
     def cancel_adding_sensor(self):
         self.ids.channel_num_input.text = ''
