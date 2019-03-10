@@ -4,8 +4,13 @@ import datetime
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
+from kivy.uix.textinput import TextInput
+from kivy.uix.togglebutton import ToggleButton
 from kivy.clock import Clock
 from kivy.garden.graph import MeshLinePlot
+from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
+import CalibrationModule
+import MicrophoneThread
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
 from kivy.uix.label import Label
@@ -86,13 +91,14 @@ class ArduinoOptionsPopup(Popup):
     def add_arduinos(self):
         for a in range(len(self.arduino_ops)):
             if a == 0:
-                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts', state='down')
+                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts', state='down', pos_hint={'center_x': 0.5})
             else:
-                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts')
+                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts', pos_hint={'center_x': 0.5})
             self.arduinos.add_widget(but)
 
     def update_arduino(self):
         buts = ToggleButtonBehavior.get_widgets('arduino_buts')
+        a_id = ''
         for b in buts:
             if b.state == 'down':
                 a_id = b.text
@@ -116,11 +122,11 @@ class StartSessionScreen(Screen):
     def on_enter(self, *args):
         AddArduinoPopup(self.arduino).open()
 
-    def insert(self, sensor_name, sensor_loc, but_mapping):
+    def insert(self, sensor_name, sensor_loc, but_mapping, channel_num):
         self.rv.data.insert(0, {'sensor_name': sensor_name or 'default value',
                                 'sensor_loc': sensor_loc or 'default value',
                                 'but_mapping': but_mapping or 'default value',
-                                'need_calibration': True})
+                                'channel_num': channel_num})
 
     def clear_text_input(self):
         # self.manager.get_screen('session_history').insert(self.ids.session_name_input.text,
@@ -177,7 +183,7 @@ class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
         Clock.unschedule(self.get_value)
 
     def get_value(self, dt):
-        self.plot.points = [(i, j / 5) for i, j in enumerate(levels)]
+        self.plot.points = [(i, j / 5) for i, j in enumerate(MicrophoneThread.levels)]
 
 
 class AddSensorPopup(Popup):
@@ -225,6 +231,27 @@ class AddSensorPopup(Popup):
         # ensure the size is okay
         if len(matches) <= 3:
             self.parent.height = 30
+
+    def reset_state(self):
+        arrow_but = ToggleButtonBehavior.get_widgets('arrows')
+        for but in arrow_but:
+            but.state = 'normal'
+
+
+class ButtonMapping(TextInput):
+    def insert_text(self, substring, from_undo=False):
+        substring = substring[:1 - len(self.text)]
+        self.parent.parent.parent.parent.reset_state()
+        return super(ButtonMapping, self).insert_text(substring, from_undo=from_undo)
+
+
+class ToggleArrow(ToggleButton):
+
+    def on_state(self, widget, value):
+        # clear any text in but_mapping TextInput
+        if value == 'down':
+            add_sensor_popup = self.parent.parent.parent.parent
+            add_sensor_popup.ids.but_mapping_input.text = ''
 
 
 class ConfirmDeletePopup(Popup):

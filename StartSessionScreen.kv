@@ -1,3 +1,9 @@
+<ToggleArrow>:
+    size: self.texture_size
+    size_hint: None, None
+    padding: (5, 5)
+    group: 'arrows'
+
 <StartSessionScreen>:
     rv: rv
     FloatLayout:
@@ -5,8 +11,6 @@
             id: btn
             text: 'Menu'
             on_release: app.root.drop_down.open(self)
-            size_hint: None, None
-            size: self.texture_size
             padding: (80, 20)
             pos_hint: ({'top': 1})
 
@@ -21,7 +25,6 @@
         TextInput:
             id: session_name_input
             focus: True
-            #input_filter: lambda text, from_undo: text[:5 - len(self.text)]
             height: self.minimum_height
             size_hint: 0.3, None
             multiline: False
@@ -42,9 +45,7 @@
         CustomizedButton:
             text: 'Add New Sensor'
             pos_hint: ({'center_x': 0.7, 'center_y': 0.75})
-            size: self.texture_size
             padding: (60, 15)
-            size_hint: None, None
             on_release: root.add_sensor_popup.open()
         RecycleView:
             id: rv
@@ -67,9 +68,7 @@
         CustomizedButton:
             text: "Start Session"
             pos_hint: ({'center_x': 0.5, 'center_y': 0.05})
-            size: self.texture_size
             padding: (80, 20)
-            size_hint: None, None
             on_press:
                 root.clear_text_input() if session_name_input.text and session_date_input.text and rv.data else Factory.MissingFieldPopup().open()
                 #root.manager.get_screen('session_history').insert(session_name_input.text, rv.data)
@@ -83,27 +82,26 @@
     orientation: 'vertical'
     canvas.before:
         Color:
-            rgba: 0.5, 0.5, 0.5, 1
-            #rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
+            rgba: (0, 0, 0, 1)
         Rectangle:
             size: self.size
             pos: self.pos
     sensor_name: ''
     sensor_loc: ''
     but_mapping: ''
-    #need_calibration: ''
+    channel_num: ''
     BoxLayout:
         size_hint: [1, 0.2]
         orientation: 'horizontal'
         CustomizedLabel:
+            text: 'Sensor Num: ' + root.channel_num
+        CustomizedLabel:
             text: 'Sensor Name: ' + root.sensor_name
-            #size_hint: [1, .2]
         CustomizedLabel:
             text: 'Sensor Location: ' + root.sensor_loc
         CustomizedLabel:
             text: 'Mapped to: ' + root.but_mapping
-        #CustomizedLabel:
-        #    text: 'Calibrated? ' + 'NO' if root.need_calibration else 'YES'
+
     BoxLayout:
         orientation: 'horizontal'
         Graph:
@@ -119,22 +117,29 @@
             pos: root.pos
         BoxLayout:
             orientation: 'vertical'
-            size_hint: [0.5, .5]
-            CustomizedButton:
+            size_hint: [.3, .8]
+            Button:
+                text: "Recalibrate Sensor"
+                font_size: '20sp'
+                on_press:
+                    Factory.CalibrationSetupPopup().open()
+            Button:
                 text: "Remove Sensor"
+                font_size: '20sp'
                 on_press:
                     Factory.ConfirmDeletePopup(root).open()
-            CustomizedButton:
+            Button:
                 text: "Edit Sensor"
+                font_size: '20sp'
                 on_press:
                     Factory.AddSensorPopup(root).open()
-            CustomizedButton:
-                text: "START"
-                bold: True
+            Button:
+                text: "Begin monitoring signal"
+                font_size: '20sp'
                 on_press: root.start()
-            CustomizedButton:
-                text: "STOP"
-                bold: True
+            Button:
+                text: "Stop monitoring signal"
+                font_size: '20sp'
                 on_press: root.stop()
 
 <AddSensorPopup>:
@@ -143,6 +148,20 @@
     auto_dismiss: False
     title: 'Add a Sensor'
     FloatLayout:
+        CustomizedLabel:
+            id: channel_num_id
+            text: "Sensor Port Number:"
+            size_hint_y: None
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.9})
+        TextInput:
+            id: channel_num_input
+            text: ''
+            input_filter: lambda text, from_undo: text[:1 - len(self.text)]
+            focus: True
+            height: self.minimum_height
+            size_hint: 0.3, None
+            multiline: False
+            pos_hint: ({'center_x': 0.55, 'center_y': 0.9})
         CustomizedLabel:
             id: sensor_name_id
             text: "Sensor Name"
@@ -195,10 +214,15 @@
             pos_hint: ({'center_x': 0.45, 'center_y': 0.50})
         CustomizedLabel:
             id: but_mapping_id
+            text: "Enter either one key or choose an arrow to map to:"
+            size_hint_y: None
+            pos_hint: ({'center_x': 0.38, 'center_y': 0.38})
+        CustomizedLabel:
+            id: but_mapping_id
             text: "Map to: "
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.35})
-        TextInput:
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.30})
+        ButtonMapping:
             id: but_mapping_input
             text: root.rv_data[root.index]['but_mapping'] if root.rv_data else ''
             focus: True
@@ -207,26 +231,40 @@
             multiline: False
             input_type: 'text'
             keyboard_suggestions: True
-            pos_hint: ({'center_x': 0.555, 'center_y': 0.35})
+            pos_hint: ({'center_x': 0.555, 'center_y': 0.30})
             on_text: root.on_text()
+        ToggleArrow:
+            id: left_toggle
+            text: 'LEFT'
+            pos_hint: ({'center_x': 0.785, 'center_y': 0.30})
+        ToggleArrow:
+            id: down_toggle
+            text: 'DOWN'
+            pos_hint: ({'center_x': 0.84, 'center_y': 0.30})
+        ToggleArrow:
+            id: right_toggle
+            text: 'RIGHT'
+            pos_hint: ({'center_x': 0.90, 'center_y': 0.30})
+        ToggleArrow:
+            id: up_toggle
+            text: 'UP'
+            padding: (15, 5)
+            pos_hint: ({'center_x': 0.84, 'center_y': 0.357})
+
         CustomizedButton:
             id: dismiss_but
             text: 'Cancel'
-            size: self.texture_size
             padding: (20, 10)
-            size_hint: None, None
             pos_hint: ({'center_x': 0.30, 'center_y': 0.15})
             on_press:
                 root.cancel_adding_sensor()
         CustomizedButton:
             text: 'Calibrate Sensor'
-            size: self.texture_size
             padding: (20, 10)
-            size_hint: None, None
             pos_hint: ({'center_x': 0.70, 'center_y': 0.15})
             on_press:
-                app.root.get_screen('start_session').insert(sensor_name_input.text, sensor_loc_input.text, but_mapping_input.text) if sensor_name_input.text and sensor_loc_input.text and but_mapping_input.text else print('Cannot Calibrate Sensor')
-                root.clear_text_input() if sensor_name_input.text and sensor_loc_input.text and but_mapping_input.text else Factory.MissingFieldPopup().open()
+                app.root.get_screen('start_session').insert(sensor_name_input.text, sensor_loc_input.text, but_mapping_input.text, channel_num_input.text) if sensor_name_input.text and sensor_loc_input.text and but_mapping_input.text and channel_num_input.text else print('Cannot Calibrate Sensor')
+                root.clear_text_input() if sensor_name_input.text and sensor_loc_input.text and but_mapping_input.text and channel_num_input.text else Factory.MissingFieldPopup().open()
 
 <ConfirmDeletePopup>:
     id: confirm_delete_popup
@@ -236,22 +274,20 @@
     separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
-            text: "Confirm removing sensor:"
+            text: "Do you want to remove the sensor?"
             halign: "center"
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 
         CustomizedButton:
-            pos_hint: {'center_x': 0.25, 'center_y': 0.15}
+            pos_hint: {'center_x': 0.25, 'center_y': 0.10}
             size: self.parent.width/2, self.parent.height/5
-            size_hint: None, None
             text: 'Yes'
             on_press:
                 confirm_delete_popup.dismiss()
                 confirm_delete_popup.remove()
         CustomizedButton:
-            pos_hint: {'center_x': 0.75, 'center_y': 0.15}
+            pos_hint: {'center_x': 0.75, 'center_y': 0.10}
             size: self.parent.width/2, self.parent.height/5
-            size_hint: None, None
             text: 'No'
             on_press:
                 confirm_delete_popup.dismiss()
@@ -271,7 +307,6 @@
         CustomizedButton:
             pos: (self.parent.pos[0], self.parent.pos[1])
             size: self.parent.width, self.parent.height/5
-            size_hint: None, None
             text: 'OK'
             on_press:
                 missing_field_popup.dismiss()
@@ -291,7 +326,6 @@
         CustomizedButton:
             pos: (self.parent.pos[0], self.parent.pos[1])
             size: self.parent.width, self.parent.height/5
-            size_hint: None, None
             text: 'Find Arduino'
             on_press:
                 # root.find_arduino_result()
@@ -308,17 +342,22 @@
     BoxLayout:
         id: layout2
         orientation: 'vertical'
+        #size_hint: 1, 0.4
         CustomizedLabel:
-            size_hint: 1, 0.1
+            #pos_hint: {'center_x': 0.5}
+            #size: self.texture_size
+            #size_hint: None, None
             text: 'Choose your Arduino'
         BoxLayout:
             id: arduinos
             orientation: 'vertical'
-        Label:
-            size_hint: 1, 0.1
+            #size_y: self.parent.height/8
+            #size_hint_y: None
         CustomizedButton:
+            pos_hint: {'center_x': 0.5}
+            size: self.parent.width/2, self.parent.height/8
             text: 'Submit'
-            size_hint: 1, 0.1
+            #size_hint: 1, 0.1
             on_press:
                 root.update_arduino()
 
@@ -374,16 +413,22 @@
             text: "Connection to Arduino Unsuccessful.\nPress RESTART to find Arduinos again\nPress BACK to choose a different Arduino\nPress CANCEL to cancel the session "
 
         CustomizedButton:
+            pos_hint: {'center_x': 0.5}
+            size: self.parent.width/2, self.parent.height/8
             text: 'RESTART'
             on_press:
                 arduino_unsuccessful_popup.dismiss()
                 Factory.AddArduinoPopup(root.arduino).open()
         CustomizedButton:
+            pos_hint: {'center_x': 0.5}
+            size: self.parent.width/2, self.parent.height/8
             text: 'BACK'
             on_press:
                 arduino_unsuccessful_popup.dismiss()
                 Factory.ArduinoOptionsPopup(root.arduino, root.arduino_ops).open()
         CustomizedButton:
+            pos_hint: {'center_x': 0.5}
+            size: self.parent.width/2, self.parent.height/8
             text: 'CANCEL'
             on_press:
                 arduino_unsuccessful_popup.dismiss()

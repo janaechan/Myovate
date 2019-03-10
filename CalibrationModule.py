@@ -1,6 +1,7 @@
 from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.popup import Popup
 from kivy.uix.progressbar import ProgressBar
+from kivy.uix.button import Button
 from kivy.clock import Clock
 import time
 import Misc
@@ -39,10 +40,10 @@ class CalibrationRelaxPopup(Popup):
         self.cp.value += 1  # Updates progress_bar's progress
 
     def add_next_button(self):
-        ok_button = Misc.CustomizedButton(text='Next', pos_hint={'center_x': 0.75, 'center_y': 0.10},
-                                          size=(self.ids.layout.width / 2, self.ids.layout.height / 5),
-                                          size_hint=(None, None)
-                                          )
+        ok_button = Button(text='Next', pos_hint={'center_x': 0.75, 'center_y': 0.10},
+                           size=(self.ids.layout.width / 2, self.ids.layout.height / 5),
+                           size_hint=(None, None), font_size='20sp')
+
         ok_button.bind(on_press=self.clk)
         self.ids.layout.add_widget(ok_button)
 
@@ -81,10 +82,9 @@ class CalibrationContractPopup(Popup):
         self.cp.value += 1  # Updates progress_bar's progress
 
     def add_next_button(self):
-        ok_button = Misc.CustomizedButton(text='Next', pos_hint={'center_x': 0.75, 'center_y': 0.10},
+        ok_button = Button(text='Next', pos_hint={'center_x': 0.75, 'center_y': 0.10},
                            size=(self.ids.layout.width / 2, self.ids.layout.height / 5),
-                           size_hint=(None, None)
-                           )
+                           size_hint=(None, None), font_size='20sp')
         ok_button.bind(on_press=self.clk)
         self.ids.layout.add_widget(ok_button)
 
