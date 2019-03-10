@@ -1,8 +1,11 @@
-<ToggleArrow>:
-    size: self.texture_size
+<ToggleKeys>:
+    size: self.parent.width/15, self.parent.height/15
     size_hint: None, None
-    padding: (5, 5)
-    group: 'arrows'
+    #padding: (5, 5)
+    group: 'keys'
+
+<InputKeys@GridLayout>:
+
 
 <StartSessionScreen>:
     rv: rv
@@ -164,7 +167,7 @@
             pos_hint: ({'center_x': 0.55, 'center_y': 0.9})
         CustomizedLabel:
             id: sensor_name_id
-            text: "Sensor Name"
+            text: "Sensor Name:"
             size_hint_y: None
             pos_hint: ({'center_x': 0.20, 'center_y': 0.80})
         TextInput:
@@ -177,7 +180,7 @@
             pos_hint: ({'center_x': 0.55, 'center_y': 0.80})
         CustomizedLabel:
             id: sensor_loc_id
-            text: "Sensor Location"
+            text: "Sensor Location:"
             size_hint_y: None
             pos_hint: ({'center_x': 0.20, 'center_y': 0.70})
         TextInput:
@@ -216,12 +219,12 @@
             id: but_mapping_id
             text: "Enter either one key or choose an arrow to map to:"
             size_hint_y: None
-            pos_hint: ({'center_x': 0.38, 'center_y': 0.5})
+            pos_hint: ({'center_x': 0.38, 'center_y': 0.47})
         CustomizedLabel:
             id: but_mapping_id
             text: "Map to: "
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.5})
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.4})
         ButtonMapping:
             id: but_mapping_input
             text: root.rv_data[root.index]['but_mapping'] if root.rv_data else ''
@@ -231,24 +234,25 @@
             multiline: False
             input_type: 'text'
             keyboard_suggestions: True
-            pos_hint: ({'center_x': 0.555, 'center_y': 0.30})
-        ToggleArrow:
+            pos_hint: ({'center_x': 0.555, 'center_y': 0.4})
+
+        ToggleKeys:
             id: left_toggle
             text: 'LEFT'
-            pos_hint: ({'center_x': 0.785, 'center_y': 0.30})
-        ToggleArrow:
+            pos_hint: ({'center_x': 0.785, 'center_y': 0.40})
+        ToggleKeys:
             id: down_toggle
             text: 'DOWN'
-            pos_hint: ({'center_x': 0.84, 'center_y': 0.30})
-        ToggleArrow:
+            pos_hint: ({'center_x': 0.85, 'center_y': 0.40})
+        ToggleKeys:
             id: right_toggle
             text: 'RIGHT'
-            pos_hint: ({'center_x': 0.90, 'center_y': 0.30})
-        ToggleArrow:
+            pos_hint: ({'center_x': 0.915, 'center_y': 0.40})
+        ToggleKeys:
             id: up_toggle
             text: 'UP'
             padding: (15, 5)
-            pos_hint: ({'center_x': 0.84, 'center_y': 0.357})
+            pos_hint: ({'center_x': 0.85, 'center_y': 0.49})
 
         CustomizedButton:
             id: dismiss_but
@@ -419,7 +423,7 @@
             size_hint: None, None
             text: 'OK'
             on_press:
-                app.root.get_screen('start_session').start_graph_thread()
+                # app.root.get_screen('start_session').start_graph_thread()
                 arduino_connected_popup.dismiss()
 
 <ArduinoUnsuccessfulPopup>:

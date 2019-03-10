@@ -33,9 +33,9 @@ class Arduino():
     def find_arduino(self):
         self.arduino_ports = [
             p.device
-            for p in serial.tools.list_ports.comports()
-            if 'USB Serial' in p.description
+            for p in serial.tools.list_ports.comports()# if 'USB Serial' in p.description
         ]
+        print(self.arduino_ports)
         return self.arduino_ports
 
     def set_arduino(self, ser):
@@ -44,7 +44,13 @@ class Arduino():
         return True
 
     def get_data(self):
-        return self.arduino.readline().split(',')
+        print("GET ME DATA")
+        data = self.arduino.readline()
+        print(data)
+        while b'\n' not in data:
+            print(data)
+            data = data + self.arduino.readline()
+        return data.decode().split(',')
 
     def remove_electrode(self, channel_num):
         self.button_info.pop(channel_num)
@@ -56,7 +62,7 @@ class Arduino():
         self.record = False
         final_data = []
         count = 0
-        while self.count < self.data_points:
+        while count < self.data_points:
             data = self.get_data()
             final_data.append(int(data[channel_num]))
             count = count + 1
@@ -70,7 +76,7 @@ class Arduino():
         self.record = False
         final_data = []
         count = 0
-        while self.count < self.data_points:
+        while count < self.data_points:
             data = self.get_data()
             final_data.append(int(data[channel_num]))
             count = count + 1
@@ -95,7 +101,9 @@ class Arduino():
             code = self.button_code[button]
         self.button_info[channel_num] = code
         sends = 'py,' + str(channel_num) + "," + str(code)
+        print(sends)
         sends = sends.encode()
+
         self.arduino.write(sends)
 
     def test_comm(self):
