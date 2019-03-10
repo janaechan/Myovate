@@ -93,7 +93,7 @@ class ArduinoOptionsPopup(Popup):
             if a == 0:
                 but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts', state='down')
             else:
-                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts'
+                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts')
             self.arduinos.add_widget(but)
 
     def update_arduino(self):
