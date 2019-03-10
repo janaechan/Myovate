@@ -33,7 +33,7 @@ class AddArduinoPopup(Popup):
         if len(ops) == 0:
             NoArduinoFoundPopup(self.arduino).open()
         else:
-            self.add_arduino_popup.dismiss()
+            self.dismiss()
             ArduinoOptionsPopup(self.arduino, ops).open()
 
 
@@ -231,8 +231,15 @@ class ButtonMapping(TextInput):
         self.parent.parent.parent.parent.reset_state()
         return super(ButtonMapping, self).insert_text(substring, from_undo=from_undo)
 
+    def on_text(self, instance, value):
+        print('The widget', instance, 'have:', value)
 
-class ToggleArrow(ToggleButton):
+    # def keyboard_on_key_down(self, window, keycode, text, modifiers):
+    #     print(keycode, text, modifiers)
+
+
+class ToggleKeys\
+            (ToggleButton):
 
     def on_state(self, widget, value):
         # clear any text in but_mapping TextInput
