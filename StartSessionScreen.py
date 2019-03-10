@@ -6,10 +6,14 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 from kivy.clock import Clock
 from kivy.garden.graph import MeshLinePlot
+from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
+from kivy.uix.label import Label
 import CalibrationModule
 import audioop
 import pyaudio
 import Arduino
+from kivy.factory import Factory
 
 
 levels = []  # store levels of microphone
@@ -44,6 +48,31 @@ class AddArduinoPopup(Popup):
 
     def __init__(self, arduino=None, **kwargs):
         self.arduino = arduino
+        super(AddArduinoPopup, self).__init__(**kwargs)
+
+    def find_arduino_result(self):
+        ops = self.arduino.find_arduino()
+        if len(ops) == 0:
+            NoArduinoFoundPopup().open()
+        else:
+            self.add_arduino_popup.dismiss()
+            ArduinoOptionsPopup(self.arduino, ops).open()
+
+
+class NoArduinoFoundPopup(Popup):
+    pass
+
+
+class ArduinoConnectedPopup(Popup):
+    pass
+
+
+class ArduinoUnsuccessfulPopup(Popup):
+
+    def __init__(self, arduino=None, arduino_ops=None, **kwargs):
+        self.arduino = arduino
+        self.arduino_ops = arduino_ops
+        super(ArduinoUnsuccessfulPopup, self).__init__(**kwargs)
 
 
 class ArduinoOptionsPopup(Popup):
@@ -51,6 +80,28 @@ class ArduinoOptionsPopup(Popup):
     def __init__(self, arduino=None, arduino_ops=None, **kwargs):
         self.arduino = arduino
         self.arduino_ops = arduino_ops
+        super(ArduinoOptionsPopup, self).__init__(**kwargs)
+        self.add_arduinos()
+
+    def add_arduinos(self):
+        for a in range(len(self.arduino_ops)):
+            if a == 0:
+                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts', state='down')
+            else:
+                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts'
+            self.arduinos.add_widget(but)
+
+    def update_arduino(self):
+        buts = ToggleButtonBehavior.get_widgets('arduino_buts')
+        for b in buts:
+            if b.state == 'down':
+                a_id = b.text
+                print(b.text)
+        self.dismiss()
+        if self.arduino.set_arduino(a_id):
+            ArduinoConnectedPopup().open()
+        else:
+            ArduinoUnsuccessfulPopup(self.arduino, self.arduino_ops).open()
 
 
 class StartSessionScreen(Screen):
@@ -58,7 +109,7 @@ class StartSessionScreen(Screen):
     session_date = datetime.date.today().strftime('%m/%d/%y')
 
     def __init__(self, **kwargs):
-        self.arduino = Arduino()
+        self.arduino = Arduino.Arduino()
         super(StartSessionScreen, self).__init__(**kwargs)
         self.add_sensor_popup = AddSensorPopup()
 

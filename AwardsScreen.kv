@@ -88,7 +88,12 @@
             text: 'First Session Award'
         CustomizedLabel:
             text: 'Congratulations! You just received the First Session Award for completing your first session!'
-        CustomizedButton:
-            text: 'Close'
-            on_press:
-                award_popup.dismiss()
+        BoxLayout:
+            orientation: 'horizontal'
+            Label:
+
+            CustomizedButton:
+                text: 'Close'
+                on_press:
+                    award_popup.dismiss()
+            Label:

@@ -3,11 +3,13 @@ import warnings
 import serial.tools.list_ports
 import time
 import NewMyovate
+from kivy.event import EventDispatcher
+from kivy.uix.widget import Widget
 
 
 class Arduino():
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.baud_rate = 9600
         self.data_points = 1500
         self.cal_points = 70
@@ -24,18 +26,21 @@ class Arduino():
             'KEY_LEFT_ARROW':215,
             'KEY_RIGHT_ARROW':214
         }
+        #super(Arduino, self).__init__(**kwargs)
 
     def find_arduino(self):
-        self.arduino_ports = [
-            p.device
-            for p in serial.tools.list_ports.comports()
-            if 'USB Serial' in p.description
-        ]
-        return self.arduino_ports
+        return ['1', '2', '3']
+        # self.arduino_ports = [
+        #     p.device
+        #     for p in serial.tools.list_ports.comports()
+        #     if 'USB Serial' in p.description
+        # ]
+        # return self.arduino_ports
 
     def set_arduino(self, ser):
-        self.ser = ser
-        self.arduino = serial.Serial(self.ser, self.baud_rate, timeout=0.1)
+        return False
+        # self.ser = ser
+        # self.arduino = serial.Serial(self.ser, self.baud_rate, timeout=0.1)
 
     def get_data(self):
         return self.arduino.readline().split(',')
@@ -85,15 +90,15 @@ class Arduino():
         self.arduino.write(b'py,1,200')
         print(self.arduino.readline())
 
-if __name__ == '__main__':
-    a = Arduino()
-    all_ar = a.find_arduino()
-    if len(all_ar) < 1:
-        print("No Arduino found")
-    else:
-        if len(all_ar) > 1:
-            print("Multiple Arduino")
-        a.set_arduino(all_ar[0])
-        #a.test_comm()
-        time.sleep(10)
-        a.send_button_map(1, 50)
+# if __name__ == '__main__':
+#     a = Arduino()
+#     all_ar = a.find_arduino()
+#     if len(all_ar) < 1:
+#         print("No Arduino found")
+#     else:
+#         if len(all_ar) > 1:
+#             print("Multiple Arduino")
+#         a.set_arduino(all_ar[0])
+#         #a.test_comm()
+#         time.sleep(10)
+#         a.send_button_map(1, 50)
