@@ -29,7 +29,7 @@ class Arduino():
         #super(Arduino, self).__init__(**kwargs)
 
     def find_arduino(self):
-        return ['1', '2', '3']
+        return ['1']
         # self.arduino_ports = [
         #     p.device
         #     for p in serial.tools.list_ports.comports()
@@ -38,7 +38,7 @@ class Arduino():
         # return self.arduino_ports
 
     def set_arduino(self, ser):
-        return False
+        return True
         # self.ser = ser
         # self.arduino = serial.Serial(self.ser, self.baud_rate, timeout=0.1)
 

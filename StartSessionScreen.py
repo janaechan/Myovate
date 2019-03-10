@@ -91,9 +91,9 @@ class ArduinoOptionsPopup(Popup):
     def add_arduinos(self):
         for a in range(len(self.arduino_ops)):
             if a == 0:
-                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts', state='down')
+                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts', state='down', pos_hint={'center_x': 0.5})
             else:
-                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts')
+                but = ToggleButton(text=self.arduino_ops[a], group='arduino_buts', pos_hint={'center_x': 0.5})
             self.arduinos.add_widget(but)
 
     def update_arduino(self):
@@ -121,11 +121,11 @@ class StartSessionScreen(Screen):
     def on_enter(self, *args):
         AddArduinoPopup(self.arduino).open()
 
-    def insert(self, sensor_name, sensor_loc, but_mapping):
+    def insert(self, sensor_name, sensor_loc, but_mapping, channel_num):
         self.rv.data.insert(0, {'sensor_name': sensor_name or 'default value',
                                 'sensor_loc': sensor_loc or 'default value',
                                 'but_mapping': but_mapping or 'default value',
-                                'need_calibration': True})
+                                'channel_num': channel_num})
 
     def clear_text_input(self):
         # self.manager.get_screen('session_history').insert(self.ids.session_name_input.text,
