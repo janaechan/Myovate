@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
-from kivy.properties import ObjectProperty, BooleanProperty
+from kivy.properties import ObjectProperty, BooleanProperty, NumericProperty
 import datetime
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
@@ -19,34 +19,6 @@ import audioop
 import pyaudio
 import Arduino
 from kivy.factory import Factory
-
-
-levels = []  # store levels of microphone
-
-
-def get_microphone_level():
-    """
-    source: http://stackoverflow.com/questions/26478315/getting-volume-levels-from-pyaudio-for-use-in-arduino
-    audioop.max alternative to audioop.rms
-    """
-    chunk = 100
-    FORMAT = pyaudio.paInt16
-    CHANNELS = 1
-    RATE = 30000
-    p = pyaudio.PyAudio()
-
-    s = p.open(format=FORMAT,
-               channels=CHANNELS,
-               rate=RATE,
-               input=True,
-               frames_per_buffer=chunk)
-    global levels
-    while True:
-        data = s.read(chunk)
-        mx = audioop.rms(data, 2)
-        if len(levels) >= 100:
-            levels = []
-        levels.append(mx)
 
 
 class AddArduinoPopup(Popup):
@@ -103,6 +75,7 @@ class ArduinoOptionsPopup(Popup):
                 a_id = b.text
                 print(b.text)
         self.dismiss()
+
         if self.arduino.set_arduino(a_id):
             ArduinoConnectedPopup().open()
         else:
@@ -117,6 +90,7 @@ class StartSessionScreen(Screen):
         self.arduino = Arduino.Arduino()
         super(StartSessionScreen, self).__init__(**kwargs)
         self.add_sensor_popup = AddSensorPopup()
+        Clock.schedule_once(self.get_num_channels)
 
     def on_enter(self, *args):
         AddArduinoPopup(self.arduino).open()
@@ -128,14 +102,19 @@ class StartSessionScreen(Screen):
                                 'channel_num': channel_num})
 
     def clear_text_input(self):
-        # self.manager.get_screen('session_history').insert(self.ids.session_name_input.text,
-        #                                                   self.ids.session_date_input.text, self.ids.rv.data)
         self.manager.get_screen('running_session').insert(self.ids.session_name_input.text,
                                                           self.ids.session_date_input.text, self.ids.rv.data)
 
         self.ids.session_name_input.text = ''
         self.ids.rv.data = []
         self.parent.current = 'running_session'
+
+    def get_num_channels(self, dt):
+        try:
+            self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 1 and {}'.format(
+                len(self.arduino.get_data()))
+        except AttributeError:
+            self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 1 and {}'.format(10)
 
 
 class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
@@ -192,7 +171,6 @@ class AddSensorPopup(Popup):
     index = 0
     date = datetime.date.today().strftime('%m/%d/%y')
 
-    # TODO Channel Number
     def __init__(self, sensor_data=None, **kwargs):
         if sensor_data is not None:
             self.rv_data = sensor_data.rv_data
@@ -201,34 +179,36 @@ class AddSensorPopup(Popup):
         super(AddSensorPopup, self).__init__(**kwargs)
 
     def clear_text_input(self):
+        print('clear_text_input')
+        print(self.ids.channel_num_input.text)
+        self.ids.channel_num_input.text = ''
         self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
         self.dismiss()
+
         return CalibrationModule.CalibrationSetupPopup().open()
 
     def cancel_adding_sensor(self):
+        self.ids.channel_num_input.text = ''
         self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
         self.dismiss()
 
-    def on_text(self):
-        # print(self.ids.keyboard_toggle.state, self.ids.game_pad_toggle.state)
-        if self.ids.keyboard_toggle.state == 'normal':
-            matches = ['A', 'B', 'X', 'Y']
-        else:
-            matches = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+    def check_for_missing_fields(self):
+        if not self.ids.channel_num_input.text or not self.ids.sensor_name_input.text or not self.ids.sensor_loc_input.text:
+            return False
 
-        # display the data in the recycleview
-        display_data = []
-        for i in matches:
-            display_data.append({'text': i})
-        # self.ids.rv.data = display_data
-
-        # ensure the size is okay
-        if len(matches) <= 3:
-            self.parent.height = 30
+        has_but = False
+        arrow_but = ToggleButtonBehavior.get_widgets('arrows')
+        for but in arrow_but:
+            if but.state == 'down':
+                has_but = True
+        if self.ids.but_mapping_input.text and not has_but:
+            return self.ids.but_mapping_input.text
+        if not self.ids.but_mapping_input.text and has_but:
+            return has_but
 
     def reset_state(self):
         arrow_but = ToggleButtonBehavior.get_widgets('arrows')

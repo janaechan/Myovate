@@ -22,7 +22,6 @@ class CalibrationRelaxPopup(Popup):
         Clock.schedule_once(self.progress_bar_start)
 
     def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
-
         self.cp.value = 1  # Initial value of progress_bar
 
     def next(self, dt):  # Updates Project Bar
