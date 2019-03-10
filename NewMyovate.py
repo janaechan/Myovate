@@ -7,7 +7,7 @@ from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager
 from threading import Thread
 import audioop
-import pyaudio
+
 
 import AboutUsScreen
 import AwardsScreen
