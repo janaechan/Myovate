@@ -8,14 +8,17 @@ from kivy.lang import Builder
 
 
 class CalibrationSetupPopup(Popup):
-    pass
+    def __init__(self, arduino=None, **kwargs):
+        self.arduino = arduino
+        super(CalibrationSetupPopup, self).__init__(**kwargs)
 
 
 class CalibrationRelaxPopup(Popup):
     progress_bar = ObjectProperty()
     cp = ObjectProperty()
 
-    def __init__(self, **kwargs):
+    def __init__(self, arduino=None, **kwargs):
+        self.arduino = arduino
         super(CalibrationRelaxPopup, self).__init__(**kwargs)
         self.progress_bar = ProgressBar()  # instance of ProgressBar created.
         Clock.schedule_once(self.progress_bar_start)
@@ -44,7 +47,7 @@ class CalibrationRelaxPopup(Popup):
         self.ids.layout.add_widget(ok_button)
 
     def clk(self, obj):
-        popup = CalibrationContractPopup()
+        popup = CalibrationContractPopup(self.arduino)
         popup.open()
         return super(CalibrationRelaxPopup, self).dismiss()
         # self.dismiss()
@@ -57,7 +60,8 @@ class CalibrationContractPopup(Popup):
     progress_bar = ObjectProperty()
     cp = ObjectProperty()
 
-    def __init__(self, **kwargs):
+    def __init__(self, arduino=None, **kwargs):
+        self.arduino = arduino
         super(CalibrationContractPopup, self).__init__(**kwargs)
         self.progress_bar = ProgressBar()  # instance of ProgressBar created.
         Clock.schedule_once(self.progress_bar_start)

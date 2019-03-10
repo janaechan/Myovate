@@ -54,7 +54,7 @@ class Arduino():
     def low_calibration(self, channel_num):
         final_data = []
         count = 0
-        while count < self.data_points:
+        while self.count < self.data_points:
             data = self.get_data()
             final_data.append(int(data[channel_num]))
             count = count + 1
@@ -65,9 +65,11 @@ class Arduino():
 
     def high_calibration(self, channel_num):
         final_data = []
-        while len(final_data) < self.data_points:
+        count = 0
+        while self.count < self.data_points:
             data = self.get_data()
             final_data.append(int(data[channel_num]))
+            count = count + 1
         final_data.sort()
         high_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num].append(high_cal)
