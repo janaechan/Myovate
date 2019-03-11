@@ -20,6 +20,7 @@ import audioop
 import GraphThread
 import Arduino
 from kivy.factory import Factory
+from multiprocessing import Process
 
 
 class AddArduinoPopup(Popup):
@@ -92,13 +93,15 @@ class StartSessionScreen(Screen):
 
     def __init__(self, **kwargs):
         self.arduino = Arduino.Arduino()
+        #GraphThread.init_arduino(self.arduino)
         self.get_graph_thread = None
         super(StartSessionScreen, self).__init__(**kwargs)
         Clock.schedule_once(self.get_num_channels)
         self.add_sensor_popup = AddSensorPopup(None, self.arduino)
 
     def on_enter(self, *args):
-        AddArduinoPopup(self.arduino).open()
+        if len(self.rv.data) == 0:
+            AddArduinoPopup(self.arduino).open()
 
     def insert(self, sensor_name, sensor_loc, but_mapping, channel_num):
         self.rv.data.insert(0, {'sensor_name': sensor_name or 'default value',
@@ -114,10 +117,18 @@ class StartSessionScreen(Screen):
         self.ids.rv.data = []
         self.parent.current = 'running_session'
 
-    def start_graph_thread(self):
-        self.get_graph_thread = Thread(target=GraphThread.get_data(self.arduino))
-        self.get_graph_thread.daemon = True
-        self.get_graph_thread.start()
+    # def start_graph_thread(self):
+    #     print("START GRAPH THREAD")
+    #     get_arduino_thread = Thread(target=GraphThread.get_data_test)
+    #     # get_arduino_thread.daemon = True
+    #     get_arduino_thread.start()
+    #     process = Process(target=GraphThread.get_data_test)
+    #     process.start()
+    #     # GraphThread.get_data_test()
+    #     # GraphThread.init_arduino(self.arduino)
+    #     # self.get_graph_thread = Thread(target=GraphThread.get_data_test())
+    #     # self.get_graph_thread.daemon = True
+    #     # self.get_graph_thread.start()
 
     def get_num_channels(self, dt):
         try:
@@ -164,14 +175,17 @@ class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
             self.rv.data.pop(self.index)
 
     def start(self):
-        self.ids.graph.add_plot(self.plot)
+        #GraphThread.get_data()
+        #self.ids.graph.add_plot(self.plot)
         Clock.schedule_interval(self.get_value, 0.001)
 
     def stop(self):
         Clock.unschedule(self.get_value)
 
     def get_value(self, dt):
-        self.plot.points = [(i, j / 5) for i, j in enumerate(MicrophoneThread.levels)]
+        pass
+        #GraphThread.get_data()
+        #self.plot.points = [(i, j / 5) for i, j in GraphThread.graph_data]
 
 
 class AddSensorPopup(Popup):
@@ -219,6 +233,11 @@ class AddSensorPopup(Popup):
         if not self.ids.but_mapping_input.text and has_but:
             return has_but
 
+    def check_channel(self):
+        if self.ids.channel_num_input.text in self.arduino.button_info:
+            return False
+        return True
+
     def reset_state(self):
         arrow_but = ToggleButtonBehavior.get_widgets('arrows')
         for but in arrow_but:
@@ -262,4 +281,7 @@ class ConfirmDeletePopup(Popup):
 
 
 class MissingFieldPopup(Popup):
+    pass
+
+class ChannelUsedPopup(Popup):
     pass

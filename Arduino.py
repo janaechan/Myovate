@@ -18,7 +18,7 @@ class Arduino():
         self.cal = {}
         self.ser = None
         self.arduino_ports = None
-        self.record = True
+        self.record = False
         self.neg_electrode = str(1 << 11)
         self.button_info = {}
         self.button_code = {
@@ -41,16 +41,19 @@ class Arduino():
     def set_arduino(self, ser):
         self.ser = ser
         self.arduino = serial.Serial(self.ser, self.baud_rate, timeout=0.1)
+
         return True
 
     def get_data(self):
-        print("GET ME DATA")
-        data = self.arduino.readline()
-        print(data)
-        while b'\n' not in data:
-            print(data)
-            data = data + self.arduino.readline()
-        return data.decode().split(',')
+        data = self.arduino.readline(1)
+        while b'\r\n' not in data:
+            data = data + self.arduino.readline(1)
+        data = self.arduino.readline(1)
+        while b'\r\n' not in data:
+            data = data + self.arduino.readline(1)
+        final_data = data.decode().split(',')
+
+        return final_data
 
     def remove_electrode(self, channel_num):
         self.button_info.pop(channel_num)
@@ -87,9 +90,10 @@ class Arduino():
         return high_cal
 
     def send_calibration(self, channel_num):
-        lo_cal = str(self.cal[channel_num][0])
-        hi_cal = str(self.cal[channel_num][1])
-        sends = 'py,' + str(channel_num) + "," + lo_cal + "," + hi_cal
+        lo_cal = str(int(self.cal[channel_num][0]))
+        hi_cal = str(int(self.cal[channel_num][1]))
+        sends = 'py,' + str(int(channel_num)) + "," + lo_cal + "," + hi_cal
+        print(sends)
         sends = sends.encode()
         self.arduino.write(sends)
 
@@ -100,7 +104,7 @@ class Arduino():
         else:
             code = self.button_code[button]
         self.button_info[channel_num] = code
-        sends = 'py,' + str(channel_num) + "," + str(code)
+        sends = 'py,' + str(int(channel_num)) + "," + str(code)
         print(sends)
         sends = sends.encode()
 
