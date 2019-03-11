@@ -118,6 +118,7 @@ class StartSessionScreen(Screen):
 
         self.ids.session_name_input.text = ''
         self.ids.rv.data = []
+        self.arduino.send_all_cals()
         self.parent.current = 'running_session'
 
     # def start_graph_thread(self):
@@ -310,6 +311,7 @@ class ConfirmDeletePopup(Popup):
 
 class MissingFieldPopup(Popup):
     pass
+
 
 class ChannelUsedPopup(Popup):
     pass

@@ -68,7 +68,6 @@ class Arduino:
         while b'\r\n' not in data:
             data = data + self.arduino.readline(1)
         final_data = data.decode().split(',')
-
         return final_data
 
     def remove_electrode(self, channel_num):
@@ -105,6 +104,21 @@ class Arduino:
         self.record = True
         return high_cal
 
+    def send_button_map(self, channel_num, button):
+        code = ''
+        if len(button) == 1:
+            code = ord(button)
+        else:
+            try:
+                code = self.button_code[button]
+            except KeyError:
+                code = self.direction_code[button]
+        self.button_info[channel_num] = code
+        sends = 'py,' + str(channel_num) + "," + str(self.button_info[channel_num])
+        print(sends, sends.encode())
+        sends = sends.encode()
+        self.arduino.write(sends)
+
     def send_calibration(self, channel_num):
         lo_cal = str(int(self.cal[channel_num][0]))
         hi_cal = str(int(self.cal[channel_num][1]))
@@ -113,34 +127,29 @@ class Arduino:
         sends = sends.encode()
         self.arduino.write(sends)
 
-    def send_button_map(self, channel_num, button):
-        code = ''
-        if len(button) == 1:
-            code = button
-        else:
-            try:
-                code = self.button_code[button]
-            except KeyError:
-                code = self.direction_code[button]
-        self.button_info[channel_num] = code
-        sends = 'py,' + str(channel_num) + "," + str(code)
-        print(sends, sends.encode())
-        sends = sends.encode()
+    # def button_map(self, channel_num):
+    #     sends = 'py,' + str(channel_num) + "," + str(self.button_info[channel_num])
+    #     print(sends, sends.encode())
+    #     sends = sends.encode()
+    #     self.arduino.write(sends)
 
-        self.arduino.write(sends)
+    def send_all_cals(self):
+        for channel in self.cal:
+            time.sleep(0.5)
+            self.send_calibration(channel)
 
     def test_comm(self):
         self.arduino.write(b'py,1,200')
         print(self.arduino.readline())
 
-# if __name__ == '__main__':
+# if __name__ == '__main__'a
 #     a = Arduino()
 #     all_ar = a.find_arduino()
 #     if len(all_ar) < 1:
 #         print("No Arduino found")
-#     else:
+#     else:a
 #         if len(all_ar) > 1:
-#             print("Multiple Arduino")
+#             print("Multiple Arduino"a
 #         a.set_arduino(all_ar[0])
 #         #a.test_comm()
 #         time.sleep(10)
