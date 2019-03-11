@@ -1,5 +1,3 @@
-graph_data = []
-
 import serial  # import Serial Library
 import numpy  # Import numpy
 import matplotlib.pyplot as plt  # import matplotlib library
@@ -44,6 +42,8 @@ def get_data_test():
         if (cnt > 50):  # If you have 50 or more points, delete the first one from the array
             tempF.pop(0)  # This allows us to just see the last 50 data points
             pressure.pop(0)
+
+graph_data = []
 
 
 def get_data(arduino):

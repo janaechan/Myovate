@@ -95,6 +95,7 @@ class CalibrationContractPopup(Popup):
     def clk(self, obj):
         popup = CalibrationCompletePopup()
         popup.open()
+        self.arduino.send_calibration(self.channel)
         return super(CalibrationContractPopup, self).dismiss()
         # self.dismiss()
 
