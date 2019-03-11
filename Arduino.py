@@ -7,9 +7,7 @@ from kivy.event import EventDispatcher
 from kivy.uix.widget import Widget
 
 
-
-class Arduino():
-
+class Arduino:
     def __init__(self, **kwargs):
         self.baud_rate = 9600
         self.data_points = 1500
@@ -21,14 +19,33 @@ class Arduino():
         self.record = True
         self.neg_electrode = str(1 << 11)
         self.button_info = {}
-        self.button_code = {
-
+        self.direction_code = {
+            'KEY_UP_ARROW': 218,
             'KEY_DOWN_ARROW': 217,
-            'KEY_UP_ARROW':216,
-            'KEY_LEFT_ARROW':215,
-            'KEY_RIGHT_ARROW':214
+            'KEY_LEFT_ARROW': 216,
+            'KEY_RIGHT_ARROW': 215,
         }
-        #super(Arduino, self).__init__(**kwargs)
+        self.button_code = {
+            'KEY_LEFT_CTRL': 128,
+            'KEY_LEFT_SHIFT': 129,
+            'KEY_LEFT_ALT': 130,
+            'KEY_BACKSPACE': 178,
+            'KEY_RIGHT_ALT': 134,
+            'KEY_RIGHT_SHIFT': 133,
+            'KEY_RIGHT_CTRL': 132,
+
+            'KEY_TAB': 179,
+            'KEY_RETURN': 176,
+            'KEY_ESC': 177,
+            'KEY_INSERT': 209,
+            'KEY_DELETE': 212,
+            'KEY_PAGE_UP': 211,
+            'KEY_PAGE_DOWN': 214,
+            'KEY_HOME': 210,
+            'KEY_END': 213,
+            'KEY_CAPS_LOCK': 193,
+        }
+
 
     def find_arduino(self):
         self.arduino_ports = [
@@ -98,10 +115,13 @@ class Arduino():
         if len(button) == 1:
             code = button
         else:
-            code = self.button_code[button]
+            try:
+                code = self.button_code[button]
+            except KeyError:
+                code = self.direction_code[button]
         self.button_info[channel_num] = code
         sends = 'py,' + str(channel_num) + "," + str(code)
-        print(sends)
+        print(sends, sends.encode())
         sends = sends.encode()
 
         self.arduino.write(sends)

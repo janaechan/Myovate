@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
-from kivy.properties import ObjectProperty, BooleanProperty, NumericProperty
+from kivy.properties import ObjectProperty, BooleanProperty, NumericProperty, StringProperty
 import datetime
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.boxlayout import BoxLayout
@@ -7,6 +7,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
 from threading import Thread
 from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.button import Button
 from kivy.clock import Clock
 from kivy.garden.graph import MeshLinePlot
 from kivy.uix.behaviors.togglebutton import ToggleButtonBehavior
@@ -101,6 +102,8 @@ class StartSessionScreen(Screen):
         AddArduinoPopup(self.arduino).open()
 
     def insert(self, sensor_name, sensor_loc, but_mapping, channel_num):
+        if 'KEY_' in but_mapping:
+            but_mapping = ' '.join(but_mapping.split('_')[1:])
         self.rv.data.insert(0, {'sensor_name': sensor_name or 'default value',
                                 'sensor_loc': sensor_loc or 'default value',
                                 'but_mapping': but_mapping or 'default value',
@@ -157,7 +160,6 @@ class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
         self.rv_data = rv.data
         self.index = index
         self.selected = is_selected
-        print(self.index)
 
     def remove(self):
         if self.rv:
@@ -175,22 +177,22 @@ class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
 
 
 class AddSensorPopup(Popup):
+    container = ObjectProperty(None)
     rv_data = ObjectProperty()
-    txt_input = ObjectProperty()
     rv = ObjectProperty()
     index = 0
     date = datetime.date.today().strftime('%m/%d/%y')
+    but_mapping = StringProperty()
 
     def __init__(self, sensor_data=None, arduino=None, **kwargs):
         if sensor_data is not None:
             self.rv_data = sensor_data.rv_data
             self.index = sensor_data.index
-            print(sensor_data.rv_data)
         self.arduino = arduino
         super(AddSensorPopup, self).__init__(**kwargs)
 
     def clear_text_input(self):
-        self.arduino.send_button_map(int(self.ids.channel_num_input.text), self.ids.but_mapping_input.text)
+        self.arduino.send_button_map(int(self.ids.channel_num_input.text), self.but_mapping)
         CalibrationModule.CalibrationSetupPopup(self.arduino, int(self.ids.channel_num_input.text)).open()
         self.ids.channel_num_input.text = ''
         self.ids.sensor_name_input.text = ''
@@ -210,8 +212,8 @@ class AddSensorPopup(Popup):
             return False
 
         has_but = False
-        arrow_but = ToggleButtonBehavior.get_widgets('arrows')
-        for but in arrow_but:
+        keys = ToggleButtonBehavior.get_widgets('keys')
+        for but in keys:
             if but.state == 'down':
                 has_but = True
         if self.ids.but_mapping_input.text and not has_but:
@@ -220,32 +222,58 @@ class AddSensorPopup(Popup):
             return has_but
 
     def reset_state(self):
-        arrow_but = ToggleButtonBehavior.get_widgets('arrows')
-        for but in arrow_but:
+        keys = ToggleButtonBehavior.get_widgets('keys')
+        for but in keys:
             but.state = 'normal'
+
+    def on_open(self):
+        box1 = BoxLayout(orientation='horizontal')
+        box2 = BoxLayout(orientation='horizontal')
+        box3 = BoxLayout(orientation='horizontal')
+        count = 0
+        for i, j in self.arduino.button_code.items():
+            if count < 7:
+                box1.add_widget(ToggleKeys(text=' '.join(i.split('_')[1:]), group='keys', font_size='13sp', id=i))
+            else:
+                box2.add_widget(ToggleKeys(text=' '.join(i.split('_')[1:]), group='keys', font_size='13sp', id=i))
+            count += 1
+        for i, j in self.arduino.direction_code.items():
+            box3.add_widget(ToggleKeys(text=' '.join(i.split('_')[1:]), group='keys', font_size='13sp', id=i))
+        self.container.add_widget(box1)
+        self.container.add_widget(box2)
+        self.container.add_widget(box3)
 
 
 class ButtonMapping(TextInput):
     def insert_text(self, substring, from_undo=False):
         substring = substring[:1 - len(self.text)]
-        self.parent.parent.parent.parent.reset_state()
+        add_sensor_popup = self.parent.parent.parent.parent
+        add_sensor_popup.reset_state()
+        add_sensor_popup.but_mapping = substring
+        print(add_sensor_popup.but_mapping)
         return super(ButtonMapping, self).insert_text(substring, from_undo=from_undo)
 
-    def on_text(self, instance, value):
-        print('The widget', instance, 'have:', value)
+    # def on_text(self, instance, value):
+    #     print('The widget', instance, 'have:', value)
+    #     add_sensor_popup = instance.parent.parent.parent.parent
+    #     add_sensor_popup.reset_state()
 
-    # def keyboard_on_key_down(self, window, keycode, text, modifiers):
-    #     print(keycode, text, modifiers)
+    # def keyboard_on_key_up(self, window, keycode):
+    #     print(keycode)
+    #     self.parent.parent.parent.parent.but_mapping = keycode[1]
 
 
-class ToggleKeys\
-            (ToggleButton):
-
+class ToggleKeys(ToggleButton):
     def on_state(self, widget, value):
-        # clear any text in but_mapping TextInput
+        # clear any text ins but_mapping TextInput
         if value == 'down':
-            add_sensor_popup = self.parent.parent.parent.parent
-            add_sensor_popup.ids.but_mapping_input.text = ''
+            try:
+                add_sensor_popup = self.parent.parent.parent.parent
+                add_sensor_popup.ids.but_mapping_input.text = ''
+            except AttributeError:
+                add_sensor_popup = widget.parent.parent.parent.parent.parent.parent
+                add_sensor_popup.ids.but_mapping_input.text = ''
+            add_sensor_popup.but_mapping = widget.id
 
 
 class ConfirmDeletePopup(Popup):

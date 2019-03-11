@@ -1,0 +1,69 @@
+#:kivy 1.10.0
+#:import SwapTransition kivy.uix.screenmanager.SwapTransition
+
+<MyScreenManager>:
+    transition: SwapTransition()
+    Login:
+    Registers:
+        on_pre_enter:
+            self.add_buttons(app.root.total_button)
+        on_leave:
+            self.remove_buttons()
+    Welcome:
+
+<Login>:
+    id: login
+    name: "login"
+    login: login
+    GridLayout:
+        size_hint: (0.5, 0.5)
+        pos_hint: {"center_x": 0.5, "center_y": 0.6}
+        rows: 3
+        padding: 20
+
+        Label:
+            size_hint: (0.2, 0.2)
+            text:"Password:"
+            font_size: 30
+            halign: "center"
+            valign: "middle"
+
+        TextInput:
+            id: password
+            size_hint: (0.2, 0.06)
+            cursor_blink: True
+            font_size: 20
+            multiline: False
+            password: True
+
+        Button:
+            text: "Continue"
+            size_hint: (0.2, 0.08)
+            on_release:
+                root.login.check_password(root.manager, password.text)
+
+<Registers>:
+    name:'registers'
+    container: container
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            text: 'Return to Login'
+            on_press: root.manager.current = 'login'
+        Button:
+            text: 'Next Screen'
+            on_press: root.manager.current = 'welcome'
+        BoxLayout:
+            id: container
+            orientation: 'vertical'
+
+<Welcome>:
+    name:'welcome'
+    BoxLayout:
+        Label:
+            text: 'Welcome!'
+        Button:
+            text: 'Return to Registers'
+            on_press:
+                app.root.total_button = 5
+                root.manager.current = 'registers'

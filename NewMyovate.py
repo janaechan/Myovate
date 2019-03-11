@@ -18,6 +18,8 @@ import StartSessionScreen
 import MainScreen
 import ProgressScreen
 import MicrophoneThread
+import GraphThread
+import Arduino
 import Misc
 
 # class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
@@ -39,7 +41,9 @@ if __name__ == '__main__':
     # TODO create arduino instance
     # TODO start arduino thread when you start new session so you can call find_, set_, get_data
     # levels = []  # store levels of microphone
-
-    # get_arduino_thread = Thread(target=Arduino)
+    # get_microphone_thread = Thread(target=MicrophoneThread.get_microphone_level)
+    # get_microphone_thread.start()
+    # get_arduino_thread = Thread(target=GraphThread.get_data_test)
     Window.fullscreen = 'auto'
     NewMyovateApp().run()
+    # arduino = Arduino.Arduino()

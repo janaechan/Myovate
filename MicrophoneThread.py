@@ -21,9 +21,9 @@ def get_microphone_level():
                input=True,
                frames_per_buffer=chunk)
     global levels
-    # while True:
-    #     data = s.read(chunk)
-    #     mx = audioop.rms(data, 2)
-    #     if len(levels) >= 100:
-    #         levels = []
-    #     levels.append(mx)
+    while True:
+        data = s.read(chunk)
+        mx = audioop.rms(data, 2)
+        if len(levels) >= 100:
+            levels = []
+        levels.append(mx)
