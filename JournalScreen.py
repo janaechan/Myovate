@@ -74,22 +74,17 @@ class EditJournalPopup(Popup):
         super(EditJournalPopup, self).__init__(**kwargs)
 
 
-# class ScreenManagement(ScreenManager):
-#     def __init__(self, **kwargs):
-#         super(ScreenManagement, self).__init__(**kwargs)
-
-
 class JournalScreen(Screen):
     def __init__(self, **kwargs):
         super(JournalScreen, self).__init__(**kwargs)
 
     def insert(self, j_date, j_title, j_text):
-        self.rv.data.insert(0, {'journal_date': j_date or 'default value',
-                                'journal_title': j_title or 'default value',
-                                'journal_text': j_text or 'default value'})
+        self.rv.data.insert(0, {'journal_date': j_date or '<No Date>',
+                                'journal_title': j_title or '<No Title>',
+                                'journal_text': j_text or '<No Content>'})
 
     def set(self, j_date, j_title, j_text, index):
-        self.rv.data[index] = {'journal_date': j_date or 'default value',
-                                'journal_title': j_title or 'default value',
-                                'journal_text': j_text or 'default value'}
+        self.rv.data[index] = {'journal_date': j_date or '<No Date>',
+                                'journal_title': j_title or '<No Title>',
+                                'journal_text': j_text or '<No Content>'}
 

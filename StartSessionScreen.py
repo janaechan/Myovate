@@ -136,10 +136,10 @@ class StartSessionScreen(Screen):
 
     def get_num_channels(self, dt):
         try:
-            self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 1 and {}'.format(
+            self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 0 and {}'.format(
                 len(self.arduino.get_data()))
         except AttributeError:
-            self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 1 and {}'.format(10)
+            self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 1 and 10'
 
 
 class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
@@ -204,6 +204,7 @@ class AddSensorPopup(Popup):
             self.rv_data = sensor_data.rv_data
             self.index = sensor_data.index
         self.arduino = arduino
+        Clock.schedule_once(self.make_keyboard)
         super(AddSensorPopup, self).__init__(**kwargs)
 
     def clear_text_input(self):
@@ -213,6 +214,9 @@ class AddSensorPopup(Popup):
         self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
+        keys = ToggleButtonBehavior.get_widgets('keys')
+        for but in keys:
+            but.state = 'normal'
         self.dismiss()
 
     def cancel_adding_sensor(self):
@@ -220,6 +224,9 @@ class AddSensorPopup(Popup):
         self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
+        keys = ToggleButtonBehavior.get_widgets('keys')
+        for but in keys:
+            but.state = 'normal'
         self.dismiss()
 
     def check_for_missing_fields(self):
@@ -246,7 +253,7 @@ class AddSensorPopup(Popup):
         for but in keys:
             but.state = 'normal'
 
-    def on_open(self):
+    def make_keyboard(self, dt):
         box1 = BoxLayout(orientation='horizontal')
         box2 = BoxLayout(orientation='horizontal')
         box3 = BoxLayout(orientation='horizontal')

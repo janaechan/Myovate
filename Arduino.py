@@ -20,9 +20,11 @@ class Arduino:
         self.neg_electrode = str(1 << 11)
         self.button_info = {}
         self.direction_code = {
-            'KEY_UP_ARROW': 218,
-            'KEY_DOWN_ARROW': 217,
             'KEY_LEFT_ARROW': 216,
+            'KEY_UP_ARROW': 218,
+            'KEY_SPACE_BAR': 32,
+            'KEY_DOWN_ARROW': 217,
+
             'KEY_RIGHT_ARROW': 215,
         }
         self.button_code = {
