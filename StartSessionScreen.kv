@@ -87,8 +87,8 @@
             orientation: 'vertical'
             CustomizedLabel:
                 text: 'Sensor Channel Number: ' + root.channel_num
-            CustomizedLabel:
-                text: 'Sensor Name: ' + root.sensor_name
+            #CustomizedLabel:
+            #    text: 'Sensor Name: ' + root.sensor_name
             CustomizedLabel:
                 text: 'Sensor Location: ' + root.sensor_loc
             CustomizedLabel:
@@ -101,7 +101,7 @@
                 font_size: '30sp'
                 on_press:
                     #Factory.CalibrationSetupPopup(app.root.get_screen('start_session').arduino, root).open()
-                    Factory.CalibrationSetupPopup(app.root.get_screen('start_session').arduino, root.channel_num).open()
+                    Factory.CalibrationSetupPopup(app.root.get_screen('start_session').arduino, root).open()
             Button:
                 text: "Remove Sensor"
                 font_size: '30sp'
@@ -252,10 +252,7 @@
 
 <MissingFieldPopup>:
     id: missing_field_popup
-    size_hint: 0.5, 0.5
-    auto_dismiss: False
     title: 'Fields Incomplete'
-    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
             text: "Please fill in all fields."
@@ -271,10 +268,7 @@
 
 <ChannelUsedPopup>:
     id: channel_used_popup
-    size_hint: 0.5, 0.5
-    auto_dismiss: False
     title: 'Channel Used'
-    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
             text: "Channel already in use."
@@ -290,10 +284,7 @@
 
 <AddArduinoPopup>:
     id: add_arduino_popup
-    size_hint: 0.5, 0.5
-    auto_dismiss: False
     title: 'Connect Your Device'
-    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
             text: 'Find your device to connect to.'
@@ -317,11 +308,9 @@
 
 <ArduinoOptionsPopup>:
     id: arduino_options_popup
-    size_hint: 0.5, 0.5
-    auto_dismiss: False
     arduinos: arduinos
     title: 'Connect Your Device'
-    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
+
     BoxLayout:
         id: layout2
         orientation: 'vertical'
@@ -357,10 +346,8 @@
 
 <NoArduinoFoundPopup>:
     id: no_arduino_found_popup
-    size_hint: 0.5, 0.5
     auto_dismiss: False
     title: 'No Arduino Found'
-    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
             text: "No Arduino Found, please check connection and try again"
@@ -385,10 +372,7 @@
 
 <ArduinoConnectedPopup>:
     id: arduino_connected_popup
-    size_hint: 0.5, 0.5
-    auto_dismiss: False
     title: 'Connected!'
-    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
             text: "Connected to Arduino Sucessfully!\nPress OK to continue with your session by adding sensors."
@@ -406,10 +390,7 @@
 
 <ArduinoUnsuccessfulPopup>:
     id: arduino_unsuccessful_popup
-    size_hint: 0.5, 0.5
-    auto_dismiss: False
     title: 'Connection not Successful'
-    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     BoxLayout:
         orientation: 'vertical'
         CustomizedLabel:
@@ -440,9 +421,7 @@
 <SendingToArduinoPopup>:
     id: sending_to_arduino_popup
     cp: cp
-    size_hint: 0.5, 0.5
     info: send_arduino
-    auto_dismiss: False
     title: 'Sending information to Arduino'
     on_open: root.puopen()
     FloatLayout:

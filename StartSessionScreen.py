@@ -26,7 +26,8 @@ from kivy.factory import Factory
 from multiprocessing import Process
 import Misc
 
-class AddArduinoPopup(Popup):
+
+class AddArduinoPopup(Misc.CustomizedPopup):
 
     def __init__(self, arduino=None, **kwargs):
         self.arduino = arduino
@@ -41,17 +42,17 @@ class AddArduinoPopup(Popup):
             ArduinoOptionsPopup(self.arduino, ops).open()
 
 
-class NoArduinoFoundPopup(Popup):
+class NoArduinoFoundPopup(Misc.CustomizedPopup):
     def __init__(self, arduino=None, **kwargs):
         self.arduino = arduino
         super(NoArduinoFoundPopup, self).__init__(**kwargs)
 
 
-class ArduinoConnectedPopup(Popup):
+class ArduinoConnectedPopup(Misc.CustomizedPopup):
     pass
 
 
-class ArduinoUnsuccessfulPopup(Popup):
+class ArduinoUnsuccessfulPopup(Misc.CustomizedPopup):
 
     def __init__(self, arduino=None, arduino_ops=None, **kwargs):
         self.arduino = arduino
@@ -59,7 +60,7 @@ class ArduinoUnsuccessfulPopup(Popup):
         super(ArduinoUnsuccessfulPopup, self).__init__(**kwargs)
 
 
-class ArduinoOptionsPopup(Popup):
+class ArduinoOptionsPopup(Misc.CustomizedPopup):
 
     def __init__(self, arduino=None, arduino_ops=None, **kwargs):
         self.arduino = arduino
@@ -315,15 +316,15 @@ class ConfirmDeletePopup(Misc.CustomizedPopup):
         self.rv.data.pop(self.index)
 
 
-class MissingFieldPopup(Misc.Popup):
+class MissingFieldPopup(Misc.CustomizedPopup):
     pass
 
 
-class ChannelUsedPopup(Misc.Popup):
+class ChannelUsedPopup(Misc.CustomizedPopup):
     pass
 
 
-class SendingToArduinoPopup(Popup):
+class SendingToArduinoPopup(Misc.CustomizedPopup):
     progress_bar = ObjectProperty()
     cp = ObjectProperty()
 
