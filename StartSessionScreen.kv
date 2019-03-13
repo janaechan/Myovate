@@ -118,17 +118,17 @@
                 text: "Recalibrate Sensor"
                 font_size: '20sp'
                 on_press:
-                    Factory.CalibrationSetupPopup().open()
+                    Factory.CalibrationSetupPopup(app.root.get_screen('start_session').arduino).open()
             Button:
                 text: "Remove Sensor"
                 font_size: '20sp'
                 on_press:
-                    Factory.ConfirmDeletePopup(root).open()
+                    Factory.ConfirmDeletePopup(root, app.root.get_screen('start_session').arduino).open()
             Button:
                 text: "Edit Sensor"
                 font_size: '20sp'
                 on_press:
-                    Factory.AddSensorPopup(root).open()
+                    Factory.AddSensorPopup(root, app.root.get_screen('start_session').arduino).open()
             Button:
                 text: "Begin monitoring signal"
                 font_size: '20sp'

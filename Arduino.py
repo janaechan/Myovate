@@ -10,8 +10,8 @@ from kivy.uix.widget import Widget
 class Arduino:
     def __init__(self, **kwargs):
         self.baud_rate = 9600
-        self.data_points = 1500
-        self.cal_points = 70
+        self.data_points = 2000
+        self.cal_points = 100
         self.arduino = None
         self.cal = {}
         self.ser = None
@@ -43,7 +43,7 @@ class Arduino:
             'KEY_PAGE_DOWN': 214,
             'KEY_HOME': 210,
             'KEY_END': 213,
-            'KEY_CAPS_LOCK': 193,
+            'KEY_CAPS_LOCK': 193
         }
 
     def find_arduino(self):
@@ -98,7 +98,8 @@ class Arduino:
             data = self.get_data()
             final_data.append(int(data[channel_num]))
             count = count + 1
-        final_data.sort()
+        final_data.sort(reverse=True)
+        print(final_data[0:self.cal_points])
         high_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num].append(high_cal)
         self.record = True
@@ -135,7 +136,7 @@ class Arduino:
 
     def send_all_cals(self):
         for channel in self.cal:
-            time.sleep(0.5)
+            time.sleep(2)
             self.send_calibration(channel)
 
     def test_comm(self):
@@ -152,5 +153,5 @@ class Arduino:
 #             print("Multiple Arduino"a
 #         a.set_arduino(all_ar[0])
 #         #a.test_comm()
-#         time.sleep(10)
+#         time.sleep(10)a
 #         a.send_button_map(1, 50)

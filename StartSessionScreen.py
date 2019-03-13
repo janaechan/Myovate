@@ -299,14 +299,18 @@ class ToggleKeys(ToggleButton):
 class ConfirmDeletePopup(Popup):
     remove_status = BooleanProperty(False)
 
-    def __init__(self, root, **kwargs):
+    def __init__(self, sensor_data=None, arduino=None, **kwargs):
+        self.rv_data = sensor_data.rv_data
+        self.index = sensor_data.index
+        self.arduino = arduino
         super(ConfirmDeletePopup, self).__init__(**kwargs)
-        self.root = root
+
 
     def remove(self):
         print('update remove status')
         self.remove_status = True
-        self.root.remove()
+        self.sensor_data.remove()
+        self.arduino.remove_electrode(self.rv_data[self.index]['channel_num'])
 
 
 class MissingFieldPopup(Popup):
@@ -315,3 +319,6 @@ class MissingFieldPopup(Popup):
 
 class ChannelUsedPopup(Popup):
     pass
+
+
+
