@@ -321,8 +321,7 @@ class ConfirmDeletePopup(Misc.CustomizedPopup):
         super(ConfirmDeletePopup, self).__init__(**kwargs)
 
     def remove(self):
-        print('update remove status')
-        self.arduino.remove_electrode(self.rv.data[self.index]['channel_num'])
+        #self.arduino.remove_electrode(self.rv.data[self.index]['channel_num'])
         self.rv.data.pop(self.index)
 
 
@@ -343,7 +342,6 @@ class SendingToArduinoPopup(Misc.CustomizedPopup):
         super(SendingToArduinoPopup, self).__init__(**kwargs)
         self.progress_bar = ProgressBar()  # instance of ProgressBar created.
         Clock.schedule_once(self.progress_bar_start)
-        self.arduino.send_all_cals()
 
     def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
         self.cp.value = 1  # Initial value of progress_bar
@@ -355,7 +353,8 @@ class SendingToArduinoPopup(Misc.CustomizedPopup):
             time.sleep(1)
             self.info.text = 'All information sent! Please proceed to play games.'
             return False  # Returning False schedule is canceled and won't repeat
-
+        if self.cp.value == 2:
+            self.arduino.send_all_cals()
         # get new value from arduino global
         self.cp.value += 1  # Updates progress_bar's progress
 
@@ -373,4 +372,42 @@ class SendingToArduinoPopup(Misc.CustomizedPopup):
     def puopen(self):  # Called from bind.
         Clock.schedule_interval(self.next, .0005)  # Creates Clock event scheduling next() every 5-1000th of a second.
 
+class RemovingSensorPopup(Popup):
+    progress_bar = ObjectProperty()
+    cp = ObjectProperty()
 
+    def __init__(self, arduino=None, channel=None, **kwargs):
+        self.arduino = arduino
+        self.channel = channel
+        super(RemovingSensorPopup, self).__init__(**kwargs)
+        self.progress_bar = ProgressBar()  # instance of ProgressBar created.
+        Clock.schedule_once(self.progress_bar_start)
+
+    def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
+        self.cp.value = 1  # Initial value of progress_bar
+
+    def next(self, dt):  # Updates Project Bar
+        # 1500 data points
+        if self.cp.value >= 100:  # Checks to see if progress_bar.value has met 100
+            self.add_next_button()
+            time.sleep(1)
+            self.info.text = 'All information sent! Please proceed to play games.'
+            return False  # Returning False schedule is canceled and won't repeat
+        if self.cp.value == 2:
+            self.arduino.remove_electrode(self.channel)
+        # get new value from arduino global
+        self.cp.value += 1  # Updates progress_bar's progress
+
+    def add_next_button(self):
+        ok_button = Button(text='Next', pos_hint={'center_x': 0.5, 'center_y': 0.10},
+                           size=(self.ids.layout.width, self.ids.layout.height / 5),
+                           size_hint=(None, None), font_size='20sp')
+        ok_button.bind(on_press=self.clk)
+        self.ids.layout.add_widget(ok_button)
+
+    def clk(self, obj):
+
+        self.dismiss()
+
+    def puopen(self):  # Called from bind.
+        Clock.schedule_interval(self.next, .0005)  # Creates Clock event scheduling next() every 5-1000th of a second.

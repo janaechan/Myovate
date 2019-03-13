@@ -227,6 +227,7 @@
             on_press:
                 confirm_delete_popup.dismiss()
                 confirm_delete_popup.remove()
+                Factory.RemovingSensorPopup(root.arduino, root.self.rv_data[self.index]['channel_num'])
         CustomizedButton:
             pos_hint: {'center_x': 0.75, 'center_y': 0.10}
             size: self.parent.width/2, self.parent.height/5
@@ -406,17 +407,42 @@
     id: sending_to_arduino_popup
     cp: cp
     info: send_arduino
-    title: 'Sending information to Arduino'
+    auto_dismiss: False
+    title: 'Starting Session'
     on_open: root.puopen()
     FloatLayout:
         id: layout
         CustomizedLabel:
-            text: "Sending information to Arduino. \nPlease wait until it is complete."
+            text: "Starting Session. \nPlease wait until it is complete."
             halign: "center"
             pos_hint: {'center_x': 0.5, 'center_y': 0.8}
         CustomizedLabel:
             id: send_arduino
-            text: "Sending in progress ..."
+            text: "Starting ..."
+            pos_hint: {'center_x': 0.5, 'center_y': 0.65}
+        ProgressBar:
+            id: cp
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            max: 100
+            value: 0
+
+<RemovingSensorPopup>:
+    id: removing_sensor_popup
+    cp: cp
+    size_hint: 0.5, 0.5
+    info: send_arduino
+    auto_dismiss: False
+    title: 'Starting Session'
+    on_open: root.puopen()
+    FloatLayout:
+        id: layout
+        CustomizedLabel:
+            text: "Removing Sensor. \nPlease wait until it is complete."
+            halign: "center"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.8}
+        CustomizedLabel:
+            id: send_arduino
+            text: "Removing in progress ..."
             pos_hint: {'center_x': 0.5, 'center_y': 0.65}
         ProgressBar:
             id: cp
