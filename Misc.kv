@@ -1,53 +1,57 @@
-<DropDownMenu>:
-    Button:
-        on_release: app.root.current = "main"
-        on_press: app.root.drop_down.dismiss()
-        text: "Home"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "start_session"
-        on_press:
-            app.root.drop_down.dismiss()
-            #app.root.add_sensor_popup.open()
-        text: "Start Session"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "session_history"
-        on_press: app.root.drop_down.dismiss()
-        text: "Session History"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "progress"
-        on_press: app.root.drop_down.dismiss()
-        text: "Progress Report"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "journal"
-        on_press: app.root.drop_down.dismiss()
-        text: "Journal"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "awards"
-        on_press: app.root.drop_down.dismiss()
-        text: "Awards"
-        size_hint_y: None
-        size_y: 48
-    Button:
-        on_release: app.root.current = "about_us"
-        on_press: app.root.drop_down.dismiss()
-        text: "About Us"
-        size_hint_y: None
-        size_y: 48
-
 <CustomizedLabel>:
     font_size: '20sp'
 
-<CustomizedButton>:
-    font_size: '20sp'
+<DropDownButton>:
+    size_hint_y: None
+    size_y: 50
+    font_size: '30sp'
+
+<MenuButton>:
+    text: 'Menu'
+    font_size: '30sp'
+    on_release: app.root.drop_down.open(self)
     size_hint: None, None
     size: self.texture_size
+    pos_hint: {'top': 1 , 'left': 1}
+    padding: (80, 20)
+
+<CustomizedButton>:
+    font_size: '30sp'
+    size_hint: None, None
+    size: self.texture_size
+
+<CustomizedPopup>:
+    auto_dismiss: False
+    title_size: '20sp'
+    size_hint: 0.5, 0.5
+
+<DropDownMenu>:
+    DropDownButton:
+        on_release: app.root.current = "main"
+        on_press: app.root.drop_down.dismiss()
+        text: "Home"
+    DropDownButton:
+        on_release: app.root.current = "start_session"
+        on_press:
+            app.root.drop_down.dismiss()
+        text: "Start Session"
+    DropDownButton:
+        on_release: app.root.current = "session_history"
+        on_press: app.root.drop_down.dismiss()
+        text: "Session History"
+    DropDownButton:
+        on_release: app.root.current = "progress"
+        on_press: app.root.drop_down.dismiss()
+        text: "Progress Report"
+    DropDownButton:
+        on_release: app.root.current = "journal"
+        on_press: app.root.drop_down.dismiss()
+        text: "Journal"
+    DropDownButton:
+        on_release: app.root.current = "awards"
+        on_press: app.root.drop_down.dismiss()
+        text: "Awards"
+    DropDownButton:
+        on_release: app.root.current = "about_us"
+        on_press: app.root.drop_down.dismiss()
+        text: "About Us"

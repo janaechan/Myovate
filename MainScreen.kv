@@ -1,28 +1,32 @@
 <MainScreen>:
     FloatLayout:
-        CustomizedButton:
-            id: btn
-            text: 'Menu'
-            on_release: app.root.drop_down.open(self)
-            padding: (80, 20)
-            pos_hint: ({'top': 1})
+        Image:
+            source: 'logo.png'
+            #size_hint: 0.05, 0.05
+            allow_stretch: True
+            pos_hint: ({'center_x': 0.2, 'center_y': 0.5})
+        MenuButton:
+            pos_hint: {'top': 1 , 'right': 1}
         CustomizedLabel:
-            text: "[b] INNOVATE [/b]"
+            text: "[color=aaaaaa][b] INNOVATE [/b][/color]"
             font_size: min(root.height, root.width) / 20
-            pos_hint: ({'center_x': 0.35, 'center_y': 0.8})
+            pos_hint: ({'center_x': 0.55, 'center_y': 0.8})
             markup: True
+
         CustomizedLabel:
-            text: "[b] MOTIVATE [/b]"
+            text: "[color=aaaaaa][b] MOTIVATE [/b][/color]"
             font_size: min(root.height, root.width) / 20
-            pos_hint: ({'center_x': 0.40, 'center_y': 0.7})
+            pos_hint: ({'center_x': 0.60, 'center_y': 0.7})
             markup: True
+            color: 1,0,1,1
         CustomizedLabel:
-            text: "[b] ACTIVATE [/b]"
+            text: "[color=aaaaaa][b] ACTIVATE [/b][/color]"
             font_size: min(root.height, root.width) / 20
-            pos_hint: ({'center_x': 0.45, 'center_y': 0.6})
+            pos_hint: ({'center_x': 0.65, 'center_y': 0.6})
             markup: True
+            color: 1,0,1,1
         CustomizedLabel:
             text: "[b] MYOVATE [/b]"
             font_size: min(root.height, root.width) / 10
-            pos_hint: ({'center_x': 0.5, 'center_y': 0.5})
+            pos_hint: ({'center_x': 0.7, 'center_y': 0.5})
             markup: True

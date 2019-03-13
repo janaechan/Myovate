@@ -3,14 +3,8 @@
 <JournalScreen>:
     rv : rv
     FloatLayout:
-        CustomizedButton:
-            id: btn
-            text: 'Menu'
-            on_release: app.root.drop_down.open(self)
-            size_hint: None, None
-            size: self.texture_size
-            padding: (80, 20)
-            pos_hint: ({'top': 1})
+        MenuButton:
+
         AnchorLayout:
             anchor_x: 'center'
             anchor_y: 'top'

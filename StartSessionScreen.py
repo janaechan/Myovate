@@ -22,7 +22,7 @@ import GraphThread
 import Arduino
 from kivy.factory import Factory
 from multiprocessing import Process
-
+import Misc
 
 class AddArduinoPopup(Popup):
 
@@ -136,10 +136,10 @@ class StartSessionScreen(Screen):
 
     def get_num_channels(self, dt):
         try:
-            self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 0 and {}'.format(
-                len(self.arduino.get_data()))
+            self.add_sensor_popup.ids.channel_num_input.hint_text = \
+                'Enter value between 0 and {}'.format(len(self.arduino.get_data()))
         except AttributeError:
-            self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 1 and 10'
+            self.add_sensor_popup.ids.channel_num_input.hint_text = 'Enter value between 0 - 5'
 
 
 class StartSessionRow(RecycleDataViewBehavior, BoxLayout):
@@ -280,15 +280,6 @@ class ButtonMapping(TextInput):
         print(add_sensor_popup.but_mapping)
         return super(ButtonMapping, self).insert_text(substring, from_undo=from_undo)
 
-    # def on_text(self, instance, value):
-    #     print('The widget', instance, 'have:', value)
-    #     add_sensor_popup = instance.parent.parent.parent.parent
-    #     add_sensor_popup.reset_state()
-
-    # def keyboard_on_key_up(self, window, keycode):
-    #     print(keycode)
-    #     self.parent.parent.parent.parent.but_mapping = keycode[1]
-
 
 class ToggleKeys(ToggleButton):
     def on_state(self, widget, value):
@@ -303,28 +294,29 @@ class ToggleKeys(ToggleButton):
             add_sensor_popup.but_mapping = widget.id
 
 
-class ConfirmDeletePopup(Popup):
-    remove_status = BooleanProperty(False)
+class ConfirmDeletePopup(Misc.CustomizedPopup):
 
-    def __init__(self, sensor_data=None, arduino=None, **kwargs):
+    def __init__(self, rv=None, sensor_data=None, arduino=None, **kwargs):
+        self.rv = rv
+        print(sensor_data)
+        print(sensor_data.rv.data)
+        print(sensor_data.rv_data)
         self.rv_data = sensor_data.rv_data
         self.index = sensor_data.index
         self.arduino = arduino
         super(ConfirmDeletePopup, self).__init__(**kwargs)
 
-
     def remove(self):
         print('update remove status')
-        self.remove_status = True
-        self.sensor_data.remove()
-        self.arduino.remove_electrode(self.rv_data[self.index]['channel_num'])
+        self.arduino.remove_electrode(self.rv.data[self.index]['channel_num'])
+        self.rv.data.pop(self.index)
 
 
-class MissingFieldPopup(Popup):
+class MissingFieldPopup(Misc.Popup):
     pass
 
 
-class ChannelUsedPopup(Popup):
+class ChannelUsedPopup(Misc.Popup):
     pass
 
 

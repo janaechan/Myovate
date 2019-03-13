@@ -4,12 +4,7 @@
 <StartSessionScreen>:
     rv: rv
     FloatLayout:
-        CustomizedButton:
-            id: btn
-            text: 'Menu'
-            on_release: app.root.drop_down.open(self)
-            padding: (80, 20)
-            pos_hint: ({'top': 1})
+        MenuButton:
 
         CustomizedLabel:
             text: 'Complete all fields to start a session.'
@@ -82,7 +77,6 @@
         Rectangle:
             size: self.size
             pos: self.pos
-    sensor_name: ''
     sensor_loc: ''
     but_mapping: ''
     channel_num: ''
@@ -91,8 +85,6 @@
         orientation: 'horizontal'
         CustomizedLabel:
             text: 'Sensor Num: ' + root.channel_num
-        CustomizedLabel:
-            text: 'Sensor Name: ' + root.sensor_name
         CustomizedLabel:
             text: 'Sensor Location: ' + root.sensor_loc
         CustomizedLabel:
@@ -118,12 +110,12 @@
                 text: "Recalibrate Sensor"
                 font_size: '20sp'
                 on_press:
-                    Factory.CalibrationSetupPopup(app.root.get_screen('start_session').arduino).open()
+                    Factory.CalibrationSetupPopup(app.root.get_screen('start_session').arduino, root).open()
             Button:
                 text: "Remove Sensor"
                 font_size: '20sp'
                 on_press:
-                    Factory.ConfirmDeletePopup(root, app.root.get_screen('start_session').arduino).open()
+                    Factory.ConfirmDeletePopup(app.root.get_screen('start_session').rv, root, app.root.get_screen('start_session').arduino).open()
             Button:
                 text: "Edit Sensor"
                 font_size: '20sp'
@@ -142,8 +134,8 @@
     id: add_sensor_pop
     container: container
     size_hint: 0.6, 0.8
-    auto_dismiss: False
     title: 'Add a Sensor'
+    title_size: '20sp'
     FloatLayout:
         CustomizedLabel:
             id: channel_num_id
@@ -212,7 +204,7 @@
             pos_hint: ({'center_x': 0.45, 'center_y': 0.60})
         CustomizedLabel:
             id: but_mapping_id
-            text: "Enter either one key or choose an arrow to map to:"
+            text: "Enter one character or select one button below:"
             size_hint_y: None
             pos_hint: ({'center_x': 0.38, 'center_y': 0.47})
         CustomizedLabel:
@@ -249,19 +241,17 @@
             pos_hint: ({'center_x': 0.70, 'center_y': 0.08})
             on_press:
                 app.root.get_screen('start_session').insert(sensor_name_input.text, sensor_loc_input.text, root.but_mapping, channel_num_input.text) if root.check_for_missing_fields() else print('Cannot Calibrate Sensor')
-                root.clear_text_input() if root.check_for_missing_fields() else Factory.ChannelUsedPopup().open() if root.check_channel() else Factory.MissingFieldPopup().open()
+                root.clear_text_input() if root.check_for_missing_fields() else Factory.MissingFieldPopup().open() if root.check_channel() else Factory.ChannelUsedPopup().open()
 
 <ConfirmDeletePopup>:
     id: confirm_delete_popup
-    size_hint: 0.5, 0.5
-    auto_dismiss: False
+    #size_hint: 0.5, 0.5
     title: 'Confirm Deletion'
-    separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
             text: "Do you want to remove the sensor?"
             halign: "center"
-            pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+            pos_hint: {'center_x': 0.5, 'center_y': 0.6}
 
         CustomizedButton:
             pos_hint: {'center_x': 0.25, 'center_y': 0.10}
@@ -304,7 +294,7 @@
     separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
-            text: "Channel already in use"
+            text: "Channel already in use."
             halign: "center"
             pos_hint: {'center_x': 0.5, 'center_y': 0.6}
 
@@ -313,17 +303,17 @@
             size: self.parent.width, self.parent.height/5
             text: 'OK'
             on_press:
-                channel_used_popupr.dismiss()
+                channel_used_popup.dismiss()
 
 <AddArduinoPopup>:
     id: add_arduino_popup
     size_hint: 0.5, 0.5
     auto_dismiss: False
-    title: 'Connect Your Arduino'
+    title: 'Connect Your Device'
     separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     FloatLayout:
         CustomizedLabel:
-            text: 'Find your Arduino to connect to.'
+            text: 'Find your device to connect to.'
             halign: "center"
             pos_hint: {'center_x': 0.5, 'center_y': 0.6}
         CustomizedButton:
@@ -347,7 +337,7 @@
     size_hint: 0.5, 0.5
     auto_dismiss: False
     arduinos: arduinos
-    title: 'Connect Your Arudino'
+    title: 'Connect Your Device'
     separator_color: [0 / 255., 0 / 255., 0 / 255., 1.]
     BoxLayout:
         id: layout2
@@ -357,7 +347,7 @@
             #pos_hint: {'center_x': 0.5}
             #size: self.texture_size
             size_hint: 1, 0.2
-            text: 'Choose your Arduino'
+            text: 'Choose your device:'
         BoxLayout:
             id: arduinos
             orientation: 'vertical'
@@ -377,7 +367,7 @@
             CustomizedButton:
 #                pos: (self.parent.pos[0] + self.parent.width/2, self.parent.pos[1])
                 size: self.parent.width/2, self.parent.height
-                text: 'Submit'
+                text: 'Connect'
                 #size_hint: 1, 0.1
                 on_press:
                     root.update_arduino()
