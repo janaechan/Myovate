@@ -10,7 +10,7 @@ from kivy.uix.widget import Widget
 class Arduino:
     def __init__(self, **kwargs):
         self.baud_rate = 9600
-        self.data_points = 2000
+        self.data_points = 4000
         self.cal_points = 100
         self.arduino = None
         self.cal = {}

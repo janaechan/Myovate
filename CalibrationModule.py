@@ -25,7 +25,7 @@ class CalibrationRelaxPopup(Popup):
         super(CalibrationRelaxPopup, self).__init__(**kwargs)
         self.progress_bar = ProgressBar()  # instance of ProgressBar created.
         Clock.schedule_once(self.progress_bar_start)
-        self.arduino.low_calibration(self.channel)
+        #self.arduino.low_calibration(self.channel)
 
     def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
         self.cp.value = 1  # Initial value of progress_bar
@@ -37,7 +37,8 @@ class CalibrationRelaxPopup(Popup):
             time.sleep(1)
             self.r_cal.text = 'Current Calibration Complete'
             return False  # Returning False schedule is canceled and won't repeat
-
+        if self.cp.value == 2:
+            self.arduino.low_calibration(self.channel)
         # get new value from arduino global
         self.cp.value += 1  # Updates progress_bar's progress
 
@@ -45,7 +46,6 @@ class CalibrationRelaxPopup(Popup):
         ok_button = Button(text='Next', pos_hint={'center_x': 0.75, 'center_y': 0.10},
                            size=(self.ids.layout.width / 2, self.ids.layout.height / 5),
                            size_hint=(None, None), font_size='20sp')
-
         ok_button.bind(on_press=self.clk)
         self.ids.layout.add_widget(ok_button)
 
@@ -69,7 +69,6 @@ class CalibrationContractPopup(Popup):
         super(CalibrationContractPopup, self).__init__(**kwargs)
         self.progress_bar = ProgressBar()  # instance of ProgressBar created.
         Clock.schedule_once(self.progress_bar_start)
-        self.arduino.high_calibration(self.channel)
 
     def progress_bar_start(self, instance):  # Provides initial value of of progress bar and lanches popup
         self.cp.value = 1  # Initial value of progress_bar
@@ -81,7 +80,8 @@ class CalibrationContractPopup(Popup):
             time.sleep(1)
             self.c_cal.text = 'Current Calibration Complete'
             return False  # Returning False schedule is canceled and won't repeat
-
+        if self.cp.value == 2:
+            self.arduino.high_calibration(self.channel)
         # get new value from arduino global
         self.cp.value += 1  # Updates progress_bar's progress
 
