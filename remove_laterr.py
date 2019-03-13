@@ -1,66 +1,42 @@
-from kivy.app import App
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.uix.button import Button
-from kivy.core.window import Window
-from kivy.properties import ObjectProperty, NumericProperty
-from kivy.uix.boxlayout import BoxLayout
-import Arduino
+import serial  # import Serial Library
+import numpy  # Import numpy
+import matplotlib.pyplot as plt  # import matplotlib library
+from drawnow import *
+
+tempF = []
+pressure = []
+arduinoData = serial.Serial('com11', 115200)  # Creating our serial object named arduinoData
+plt.ion()  # Tell matplotlib you want interactive mode to plot live data
+cnt = 0
 
 
-class MyScreenManager(ScreenManager):
-    total_button = NumericProperty(2)
+def makeFig():  # Create a function that makes our desired plot
+    plt.ylim(80, 90)  # Set y min and max values
+    plt.title('My Live Streaming Sensor Data')  # Plot the title
+    plt.grid(True)  # Turn the grid on
+    plt.ylabel('Temp F')  # Set ylabels
+    plt.plot(tempF, 'ro-', label='Degrees F')  # plot the temperature
+    plt.legend(loc='upper left')  # plot the legend
+    plt2 = plt.twinx()  # Create a second y axis
+    plt.ylim(93450, 93525)  # Set limits of second y axis- adjust to readings you are getting
+    plt2.plot(pressure, 'b^-', label='Pressure (Pa)')  # plot pressure data
+    plt2.set_ylabel('Pressrue (Pa)')  # label second y axis
+    plt2.ticklabel_format(useOffset=False)  # Force matplotlib to NOT autoscale y axis
+    plt2.legend(loc='upper right')  # plot the legend
 
 
-class Login(Screen):
-    login = ObjectProperty(None)
-
-    def on_pre_enter(self):
-        Window.size = (400, 300)
-
-    def check_password(self, instance, password):
-        if password == "pwd":
-            instance.current = "registers"
-
-
-class Registers(Screen):
-    container = ObjectProperty(None)
-
-    def on_pre_enter(self):
-        Window.size = (800, 600)
-
-    def add_buttons(self, n):
-        arduino = Arduino.Arduino()
-        box1 = BoxLayout(orientation='horizontal')
-        box2 = BoxLayout(orientation='horizontal')
-        count = 0
-        for i, j in arduino.button_code.items():
-            if count < len(arduino.button_code) / 2:
-                box1.add_widget(Button(text="{}".format(' '.join(i.split('_')[1:])), id=i))
-            else:
-                box2.add_widget(Button(text="{}".format(' '.join(i.split('_')[1:])), id=i))
-            count += 1
-        self.container.add_widget(box1)
-        self.container.add_widget(box2)
-        print("Registers: n={}".format(n))
-        # for i in range(n):
-        #     self.container.add_widget(Button(text="Button #{}".format(i), id=str(i)))
-
-    def remove_buttons(self, *args):
-        for child in [child for child in self.container.children]:
-            self.container.remove_widget(child)
-
-
-class Welcome(Screen):
-    pass
-
-
-class TestApp(App):
-    title = "ScreenManager - Add Widgets Dynamically"
-
-    def build(self):
-
-        return MyScreenManager()
-
-
-if __name__ == "__main__":
-    TestApp().run()
+while True:  # While loop that loops forever
+    while (arduinoData.inWaiting() == 0):  # Wait here until there is data
+        pass  # do nothing
+    arduinoString = arduinoData.readline()  # read the line of text from the serial port
+    dataArray = arduinoString.split(',').decode()  # Split it into an array called dataArray
+    temp = float(dataArray[0])  # Convert first element to floating number and put in temp
+    P = float(dataArray[1])  # Convert second element to floating number and put in P
+    tempF.append(temp)  # Build our tempF array by appending temp readings
+    pressure.append(P)  # Building our pressure array by appending P readings
+    drawnow(makeFig)  # Call drawnow to update our live graph
+    plt.pause(.000001)  # Pause Briefly. Important to keep drawnow from crashing
+    cnt = cnt + 1
+    if (cnt > 50):  # If you have 50 or more points, delete the first one from the array
+        tempF.pop(0)  # This allows us to just see the last 50 data points
+        pressure.pop(0)

@@ -60,7 +60,6 @@ class Arduino:
     def set_arduino(self, ser):
         self.ser = ser
         self.arduino = serial.Serial(self.ser, self.baud_rate, timeout=0.1)
-
         return True
 
     def get_data(self):
@@ -74,10 +73,13 @@ class Arduino:
         return final_data
 
     def remove_electrode(self, channel_num):
-        self.button_info.pop(channel_num)
-        send = 'py,' + self.neg_electrode + ',' + self.neg_electrode
-        send = send.encode()
-        self.arduino.write(send)
+        try:
+            self.button_info.pop(channel_num)
+            send = 'py,' + self.neg_electrode + ',' + self.neg_electrode
+            send = send.encode()
+            self.arduino.write(send)
+        except KeyError:  # sensor not calibrated
+            pass
 
     def low_calibration(self, channel_num):
         self.record = False
@@ -110,6 +112,8 @@ class Arduino:
 
     def send_button_map(self, channel_num, button):
         code = ''
+        print(button)
+
         if len(button) == 1:
             code = ord(button)
         else:

@@ -1,12 +1,8 @@
 <SessionHistoryScreen>:
     rv_progress: rv_progress
     FloatLayout:
-        CustomizedButton:
-            id: btn
-            text: 'Menu'
-            on_release: app.root.drop_down.open(self)
-            padding: (80, 20)
-            pos_hint: ({'top': 1})
+        MenuButton:
+
         CustomizedLabel:
             text: 'Past Sessions'
             size_hint_y: None

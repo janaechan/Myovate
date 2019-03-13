@@ -8,14 +8,20 @@ import Misc
 from kivy.lang import Builder
 
 
-class CalibrationSetupPopup(Popup):
+class CalibrationSetupPopup(Misc.CustomizedPopup):
     def __init__(self, arduino=None, channel=None, **kwargs):
         self.arduino = arduino
         self.channel = channel
+        try:
+            print(channel.rv.data[channel.index].channel_num)
+            self.channel = channel.rv.data[channel.index].channel_num
+        except AttributeError:
+            print(channel)
+            self.channel = channel
         super(CalibrationSetupPopup, self).__init__(**kwargs)
 
 
-class CalibrationRelaxPopup(Popup):
+class CalibrationRelaxPopup(Misc.CustomizedPopup):
     progress_bar = ObjectProperty()
     cp = ObjectProperty()
 
@@ -59,7 +65,7 @@ class CalibrationRelaxPopup(Popup):
         Clock.schedule_interval(self.next, .0005)  # Creates Clock event scheduling next() every 5-1000th of a second.
 
 
-class CalibrationContractPopup(Popup):
+class CalibrationContractPopup(Misc.CustomizedPopup):
     progress_bar = ObjectProperty()
     cp = ObjectProperty()
 
@@ -102,5 +108,5 @@ class CalibrationContractPopup(Popup):
         Clock.schedule_interval(self.next, .0005)  # Creates Clock event scheduling next() every 5-1000th of a second.
 
 
-class CalibrationCompletePopup(Popup):
+class CalibrationCompletePopup(Misc.CustomizedPopup):
     pass

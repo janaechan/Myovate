@@ -1,12 +1,8 @@
 <ProgressScreen>:
     rv: rv
     FloatLayout:
-        CustomizedButton:
-            id: btn
-            text: 'Menu'
-            on_release: app.root.drop_down.open(self)
-            padding: (80, 20)
-            pos_hint: ({'top': 1})
+        MenuButton:
+
         CustomizedLabel:
             text: 'Progress Screen'
             size_hint_y: None
