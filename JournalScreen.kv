@@ -26,7 +26,7 @@
                     orientation: 'horizontal'
                     Label:
 
-                    CustomizedButton:
+                    Button:
                         text: 'Add Journal Entry'
                         on_press: Factory.AddJournalPopup().open()
                     Label:
@@ -72,13 +72,13 @@
         Label:
             size_hint: 0.15, 1
 
-        CustomizedButton:
+        Button:
             text: root.journal_title
             on_press:
                 Factory.ViewJournalPopup(root).open()
         Label:
             size_hint: 0.15, 1
-        CustomizedButton:
+        Button:
             text: 'Edit'
             on_press:
                 Factory.EditJournalPopup(root).open()
@@ -94,7 +94,7 @@
         orientation: 'vertical'
         CustomizedLabel:
             text: root.rv_data[root.index]['journal_text'] if root.rv_data else ''
-        CustomizedButton:
+        Button:
             size_hint: 1, 0.1
             text: 'Back'
             on_press: view_journal_pop.dismiss()
@@ -135,13 +135,13 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 1, 0.1
-            CustomizedButton:
+            Button:
                 id: delete_journal
                 text: 'Back'
                 on_press:
                     edit_journal_pop.dismiss()
 
-            CustomizedButton:
+            Button:
                 id: submit_journal
                 text: "Save Journal Entry"
                 on_press:
@@ -188,13 +188,13 @@
         BoxLayout:
             orientation: 'horizontal'
             size_hint: 1, 0.1
-            CustomizedButton:
+            Button:
                 id: delete_journal
                 text: 'Delete Journal Entry'
                 on_press:
                     add_journal_pop.dismiss()
 
-            CustomizedButton:
+            Button:
                 id: submit_journal
                 text: "Save Journal Entry"
                 on_press:

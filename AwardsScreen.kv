@@ -53,7 +53,7 @@
                     size_hint: 1, 0.1
                     Label:
 
-                    CustomizedButton:
+                    Button:
                         text: 'Claim Rewards!'
                         on_press:
                             Factory.AwardPopup().open()
@@ -92,8 +92,9 @@
             orientation: 'horizontal'
             Label:
 
-            CustomizedButton:
+            Button:
                 text: 'Close'
+                size_hint: 0.8, 0.8
                 on_press:
                     award_popup.dismiss()
             Label:
