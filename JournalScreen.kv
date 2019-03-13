@@ -28,6 +28,7 @@
 
                     Button:
                         text: 'Add Journal Entry'
+                        font_size: '30sp'
                         on_press: Factory.AddJournalPopup().open()
                     Label:
 
@@ -74,6 +75,7 @@
 
         Button:
             text: root.journal_title
+            font_size: '30sp'
             on_press:
                 Factory.ViewJournalPopup(root).open()
         Label:
@@ -97,6 +99,7 @@
         Button:
             size_hint: 1, 0.1
             text: 'Back'
+            font_size: '30sp'
             on_press: view_journal_pop.dismiss()
 
 <EditJournalPopup>:
@@ -137,6 +140,7 @@
             size_hint: 1, 0.1
             Button:
                 id: delete_journal
+                font_size: '30sp'
                 text: 'Back'
                 on_press:
                     edit_journal_pop.dismiss()
@@ -144,6 +148,7 @@
             Button:
                 id: submit_journal
                 text: "Save Journal Entry"
+                font_size: '30sp'
                 on_press:
                     print(root.index)
                     app.root.get_screen("journal").set(journal_date_input.text, journal_title_input.text, journal_text.text, root.index)
@@ -191,12 +196,14 @@
             Button:
                 id: delete_journal
                 text: 'Delete Journal Entry'
+                font_size: '30sp'
                 on_press:
                     add_journal_pop.dismiss()
 
             Button:
                 id: submit_journal
                 text: "Save Journal Entry"
+                font_size: '30sp'
                 on_press:
                     print(root.index)
                     app.root.get_screen("journal").insert(journal_date_input.text, journal_title_input.text, journal_text.text)

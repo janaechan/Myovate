@@ -19,6 +19,7 @@ class Arduino:
         self.record = False
         self.neg_electrode = str(1 << 11)
         self.button_info = {}
+        self.muscle_info = {}
         self.direction_code = {
             'KEY_LEFT_ARROW': 216,
             'KEY_UP_ARROW': 218,
@@ -86,7 +87,7 @@ class Arduino:
             data = self.get_data()
             final_data.append(int(data[channel_num]))
             count = count + 1
-        final_data.sort()
+        final_data.sort(reverse=False)
         low_cal = sum(final_data[0:self.cal_points])/self.cal_points
         self.cal[channel_num] = [low_cal]
         self.record = True
@@ -129,6 +130,9 @@ class Arduino:
         print(sends)
         sends = sends.encode()
         self.arduino.write(sends)
+
+    def map_muscle(self, channel_num, muscle):
+        self.muscle_info[channel_num] = muscle
 
     # def button_map(self, channel_num):
     #     sends = 'py,' + str(channel_num) + "," + str(self.button_info[channel_num])
