@@ -63,8 +63,6 @@
     but_mapping: ''
     channel_num: ''
     BoxLayout:
-        size_hint: [1, 0.2]
-        orientation: 'horizontal'
         CustomizedLabel:
             text: 'Sensor Num: ' + root.channel_num
         CustomizedLabel:
@@ -74,27 +72,27 @@
         CustomizedLabel:
             text: 'Mapped to: ' + root.but_mapping
 
-    BoxLayout:
-        orientation: 'horizontal'
-        Graph:
-            id: graph
-            xlabel: ""
-            ylabel: "Level"
-            x_ticks_minor: 5
-            x_tics_major: 25
-            y_ticks_major: 50
-            x_grid: True
-            y_grid: True
-            padding: 5
-            pos: root.pos
-        BoxLayout:
-            orientation: 'vertical'
-            size_hint: [.3, .8]
-            Button:
-                text: "Begin monitoring signal"
-                font_size: '20sp'
-                on_press: root.start()
-            Button:
-                text: "Stop monitoring signal"
-                font_size: '20sp'
-                on_press: root.stop()
+#    BoxLayout:
+#        orientation: 'horizontal'
+#        Graph:
+#            id: graph
+#            xlabel: ""
+#            ylabel: "Level"
+#            x_ticks_minor: 5
+#            x_tics_major: 25
+#            y_ticks_major: 50
+#            x_grid: True
+#            y_grid: True
+#            padding: 5
+#            pos: root.pos
+#        BoxLayout:
+#            orientation: 'vertical'
+#            size_hint: [.3, .8]
+#            Button:
+#                text: "Begin monitoring signal"
+#                font_size: '20sp'
+#                on_press: root.start()
+#            Button:
+#                text: "Stop monitoring signal"
+#                font_size: '20sp'
+#                on_press: root.stop()

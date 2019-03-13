@@ -1,4 +1,5 @@
 <ProgressScreen>:
+    rv: rv
     FloatLayout:
         MenuButton:
 
@@ -6,3 +7,54 @@
             text: 'Progress Screen'
             size_hint_y: None
             pos_hint: ({'center_x': 0.5, 'top': 0.95})
+        RecycleView:
+            id: rv
+            pos_hint: ({'center_x': 0.5, 'center_y': 0.4})
+            size_hint: .9, .5
+            scroll_type: ['bars', 'content']
+            scroll_wheel_distance: dp(114)
+            bar_width: dp(10)
+            viewclass: 'ProgressScreenRow'
+            SelectableRecycleBoxLayout:
+                id: controller
+                key_selection: 'selectable'
+                default_size: None, dp(200)
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: dp(25)
+                touch_multiselect: True
+
+<ProgressScreenRow>:
+    id: row
+    orientation: 'vertical'
+    canvas.before:
+        Color:
+            rgba: (0, 0, 0, 1)
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    sensor_loc: ''
+    sensor_date: ""
+    data_points: 0
+    BoxLayout:
+        size_hint: [1, 0.2]
+        orientation: 'horizontal'
+        CustomizedLabel:
+            text: 'Sensor Location: ' + root.sensor_loc
+
+    BoxLayout:
+        orientation: 'horizontal'
+        Graph:
+            id: graph
+            xlabel: "Date"
+            ylabel: "Level"
+            x_ticks_minor: 5
+            x_tics_major: 25
+            y_ticks_major: 50
+            x_grid: True
+            y_grid: True
+            padding: 5
+            pos: root.pos
+

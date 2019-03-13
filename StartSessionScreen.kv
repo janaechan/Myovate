@@ -81,54 +81,37 @@
     but_mapping: ''
     channel_num: ''
     BoxLayout:
-        size_hint: [1, 0.2]
         orientation: 'horizontal'
-        CustomizedLabel:
-            text: 'Sensor Num: ' + root.channel_num
-        CustomizedLabel:
-            text: 'Sensor Location: ' + root.sensor_loc
-        CustomizedLabel:
-            text: 'Mapped to: ' + root.but_mapping
-
-    BoxLayout:
-        orientation: 'horizontal'
-        Graph:
-            id: graph
-            xlabel: ""
-            ylabel: "Level"
-            x_ticks_minor: 5
-            x_tics_major: 25
-            y_ticks_major: 50
-            x_grid: True
-            y_grid: True
-            padding: 5
-            pos: root.pos
+        BoxLayout:
+            size_hint: [0.5, 0.5]
+            orientation: 'vertical'
+            CustomizedLabel:
+                text: 'Sensor Channel Number: ' + root.channel_num
+            CustomizedLabel:
+                text: 'Sensor Name: ' + root.sensor_name
+            CustomizedLabel:
+                text: 'Sensor Location: ' + root.sensor_loc
+            CustomizedLabel:
+                text: 'Mapped to: ' + root.but_mapping
         BoxLayout:
             orientation: 'vertical'
-            size_hint: [.3, .8]
+            size_hint: [0.5, 0.5]
             Button:
                 text: "Recalibrate Sensor"
-                font_size: '20sp'
+                font_size: '30sp'
                 on_press:
-                    Factory.CalibrationSetupPopup(app.root.get_screen('start_session').arduino, root).open()
+                    #Factory.CalibrationSetupPopup(app.root.get_screen('start_session').arduino, root).open()
+                    Factory.CalibrationSetupPopup(app.root.get_screen('start_session').arduino, root.channel_num).open()
             Button:
                 text: "Remove Sensor"
-                font_size: '20sp'
+                font_size: '30sp'
                 on_press:
                     Factory.ConfirmDeletePopup(app.root.get_screen('start_session').rv, root, app.root.get_screen('start_session').arduino).open()
             Button:
                 text: "Edit Sensor"
-                font_size: '20sp'
+                font_size: '30sp'
                 on_press:
                     Factory.AddSensorPopup(root, app.root.get_screen('start_session').arduino).open()
-            Button:
-                text: "Begin monitoring signal"
-                font_size: '20sp'
-                on_press: root.start()
-            Button:
-                text: "Stop monitoring signal"
-                font_size: '20sp'
-                on_press: root.stop()
 
 <AddSensorPopup>:
     id: add_sensor_pop
@@ -453,3 +436,27 @@
             on_press:
                 arduino_unsuccessful_popup.dismiss()
                 app.root.current='main'
+
+<SendingToArduinoPopup>:
+    id: sending_to_arduino_popup
+    cp: cp
+    size_hint: 0.5, 0.5
+    info: send_arduino
+    auto_dismiss: False
+    title: 'Sending information to Arduino'
+    on_open: root.puopen()
+    FloatLayout:
+        id: layout
+        CustomizedLabel:
+            text: "Sending information to Arduino. \nPlease wait until it is complete."
+            halign: "center"
+            pos_hint: {'center_x': 0.5, 'center_y': 0.8}
+        CustomizedLabel:
+            id: send_arduino
+            text: "Sending in progress ..."
+            pos_hint: {'center_x': 0.5, 'center_y': 0.65}
+        ProgressBar:
+            id: cp
+            pos_hint: {'center_x': 0.5, 'center_y': 0.4}
+            max: 100
+            value: 0
