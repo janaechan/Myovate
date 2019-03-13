@@ -1,6 +1,12 @@
 <ToggleKeys>:
     group: 'keys'
 
+<CustomizedTextInput@TextInput>:
+    font_size: '20sp'
+    focus: True
+    multiline: False
+    height: self.minimum_height
+
 <StartSessionScreen>:
     rv: rv
     FloatLayout:
@@ -14,24 +20,18 @@
             id: session_name_id
             text: "Session Name"
             pos_hint: ({'center_x': 0.15, 'center_y':0.8})
-        TextInput:
+        CustomizedTextInput:
             id: session_name_input
-            focus: True
-            height: self.minimum_height
             size_hint: 0.3, None
-            multiline: False
             pos_hint: ({'center_x': 0.4, 'center_y': 0.8})
         CustomizedLabel:
             id: session_date_id
             text: "Date"
             pos_hint: ({'center_x': 0.15, 'center_y':0.75})
-        TextInput:
+        CustomizedTextInput:
             id: session_date_input
             text: root.session_date
-            focus: True
-            height: self.minimum_height
             size_hint: 0.3, None
-            multiline: False
             pos_hint: ({'center_x': 0.4, 'center_y': 0.75})
         CustomizedButton:
             text: 'Add New Sensor'
@@ -116,7 +116,7 @@
 <AddSensorPopup>:
     id: add_sensor_pop
     container: container
-    size_hint: 0.6, 0.8
+    size_hint: 0.6, 0.7
     title: 'Add a Sensor'
     title_size: '20sp'
     FloatLayout:
@@ -124,48 +124,29 @@
             id: channel_num_id
             text: "Sensor Port Number:"
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.9})
-        TextInput:
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.90})
+        CustomizedTextInput:
             id: channel_num_input
             text: ''
+            font_size: '20sp'
             input_filter: 'float'
-            #input_filter: lambda text, from_undo: text[:1 - len(self.text)]
-            focus: True
-            height: self.minimum_height
             size_hint: 0.3, None
-            multiline: False
-            pos_hint: ({'center_x': 0.55, 'center_y': 0.9})
-        CustomizedLabel:
-            id: sensor_name_id
-            text: "Sensor Name:"
-            size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.80})
-        TextInput:
-            id: sensor_name_input
-            text: root.rv_data[root.index]['sensor_name'] if root.rv_data else ''
-            focus: True
-            height: self.minimum_height
-            size_hint: 0.3, None
-            multiline: False
-            pos_hint: ({'center_x': 0.55, 'center_y': 0.80})
+            pos_hint: ({'center_x': 0.55, 'center_y': 0.90})
         CustomizedLabel:
             id: sensor_loc_id
             text: "Sensor Location:"
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.70})
-        TextInput:
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.80})
+        CustomizedTextInput:
             id: sensor_loc_input
             text: root.rv_data[root.index]['sensor_loc'] if root.rv_data else ''
-            focus: True
-            height: self.minimum_height
             size_hint: 0.3, None
-            multiline: False
-            pos_hint: ({'center_x': 0.55, 'center_y': 0.70})
+            pos_hint: ({'center_x': 0.55, 'center_y': 0.80})
         CustomizedLabel:
             id: but_type_id
             text: "Button Type:"
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.60})
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.70})
         ToggleButton:
             id: game_pad_toggle
             text: 'Game pad'
@@ -174,7 +155,7 @@
             size: self.texture_size
             padding: (20, 5)
             size_hint: None, None
-            pos_hint: ({'center_x': 0.70, 'center_y': 0.60})
+            pos_hint: ({'center_x': 0.70, 'center_y': 0.70})
         ToggleButton:
             id: keyboard_toggle
             text: 'Keyboard'
@@ -184,17 +165,17 @@
             size: self.texture_size
             padding: (20, 5)
             size_hint: None, None
-            pos_hint: ({'center_x': 0.45, 'center_y': 0.60})
+            pos_hint: ({'center_x': 0.45, 'center_y': 0.70})
         CustomizedLabel:
             id: but_mapping_id
             text: "Enter one character or select one button below:"
             size_hint_y: None
-            pos_hint: ({'center_x': 0.38, 'center_y': 0.47})
+            pos_hint: ({'center_x': 0.47, 'center_y': 0.53})
         CustomizedLabel:
             id: but_mapping_id
             text: "Map to: "
             size_hint_y: None
-            pos_hint: ({'center_x': 0.20, 'center_y': 0.4})
+            pos_hint: ({'center_x': 0.20, 'center_y': 0.45})
         ButtonMapping:
             id: but_mapping_input
             text: root.rv_data[root.index]['but_mapping'] if root.rv_data else ''
@@ -204,12 +185,12 @@
             multiline: False
             input_type: 'text'
             keyboard_suggestions: True
-            pos_hint: ({'center_x': 0.555, 'center_y': 0.4})
+            pos_hint: ({'center_x': 0.555, 'center_y': 0.45})
         BoxLayout:
             id: container
             orientation: 'vertical'
             size_hint: 0.95, .2
-            pos_hint: ({'center_x': 0.50, 'center_y': 0.250})
+            pos_hint: ({'center_x': 0.50, 'center_y': 0.30})
         CustomizedButton:
             id: dismiss_but
             text: 'Cancel'
@@ -223,8 +204,11 @@
             padding: (20, 10)
             pos_hint: ({'center_x': 0.70, 'center_y': 0.08})
             on_press:
-                app.root.get_screen('start_session').insert(sensor_name_input.text, sensor_loc_input.text, root.but_mapping, channel_num_input.text) if root.check_for_missing_fields() else print('Cannot Calibrate Sensor')
+                app.root.get_screen('start_session').insert(sensor_loc_input.text, root.but_mapping, channel_num_input.text) if root.check_for_missing_fields() else print('Cannot Calibrate Sensor')
                 root.clear_text_input() if root.check_for_missing_fields() else Factory.MissingFieldPopup().open() if root.check_channel() else Factory.ChannelUsedPopup().open()
+
+                #app.root.get_screen('start_session').insert(sensor_name_input.text, sensor_loc_input.text, root.but_mapping, channel_num_input.text) if root.check_for_missing_fields() else print('Cannot Calibrate Sensor')
+                #root.clear_text_input() if root.check_for_missing_fields() else Factory.MissingFieldPopup().open() if root.check_channel() else Factory.ChannelUsedPopup().open()
 
 <ConfirmDeletePopup>:
     id: confirm_delete_popup
@@ -375,7 +359,7 @@
     title: 'Connected!'
     FloatLayout:
         CustomizedLabel:
-            text: "Connected to Arduino Sucessfully!\nPress OK to continue with your session by adding sensors."
+            text: "Connected to Arduino Sucessfully!\nPress OK to continue with your session\nby adding sensors."
             halign: "center"
             pos_hint: {'center_x': 0.5, 'center_y': 0.6}
 

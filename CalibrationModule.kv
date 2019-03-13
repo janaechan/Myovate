@@ -1,8 +1,6 @@
 <CalibrationSetupPopup>:
     id: calibration_setup_pop
-    size_hint: 0.5, 0.5
     title: 'Put On Sensors'
-    auto_dismiss: False
     FloatLayout:
         CustomizedLabel:
             text:"Step 1: Place the red sensor on the targeted muscle"
@@ -29,9 +27,7 @@
 <CalibrationRelaxPopup>:
     id: calibration_relax_pop
     cp: cp
-    size_hint: 0.5, 0.5
     title: 'Calibrate Relaxation'
-    auto_dismiss: False
     r_cal: relax_calibration
     on_open: root.puopen()
     FloatLayout:
@@ -58,9 +54,7 @@
 <CalibrationContractPopup>:
     id: calibration_contract_pop
     cp: cp
-    size_hint: 0.5, 0.5
     c_cal: contract_calibration
-    auto_dismiss: False
     title: 'Calibrate Contraction'
     on_open: root.puopen()
     FloatLayout:
@@ -87,9 +81,7 @@
 
 <CalibrationCompletePopup>:
     id: calibration_complete_pop
-    size_hint: 0.5, 0.5
     title: 'Calibration Complete'
-    auto_dismiss: False
     FloatLayout:
         id: layout
         CustomizedLabel:

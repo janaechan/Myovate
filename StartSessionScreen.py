@@ -107,13 +107,20 @@ class StartSessionScreen(Screen):
         if len(self.rv.data) == 0:
             AddArduinoPopup(self.arduino).open()
 
-    def insert(self, sensor_name, sensor_loc, but_mapping, channel_num):
+    def insert(self, sensor_loc, but_mapping, channel_num):
         if 'KEY_' in but_mapping:
             but_mapping = ' '.join(but_mapping.split('_')[1:])
-        self.rv.data.insert(0, {'sensor_name': sensor_name or 'default value',
-                                'sensor_loc': sensor_loc or 'default value',
+        self.rv.data.insert(0, {'sensor_loc': sensor_loc or 'default value',
                                 'but_mapping': but_mapping or 'default value',
                                 'channel_num': channel_num})
+
+    # def insert(self, sensor_name, sensor_loc, but_mapping, channel_num):
+    #     if 'KEY_' in but_mapping:
+    #         but_mapping = ' '.join(but_mapping.split('_')[1:])
+    #     self.rv.data.insert(0, {'sensor_name': sensor_name or 'default value',
+    #                             'sensor_loc': sensor_loc or 'default value',
+    #                             'but_mapping': but_mapping or 'default value',
+    #                             'channel_num': channel_num})
 
     def clear_text_input(self):
         self.manager.get_screen('running_session').insert(self.ids.session_name_input.text,
@@ -215,7 +222,7 @@ class AddSensorPopup(Popup):
         self.arduino.map_muscle(int(self.ids.channel_num_input.text), self.ids.sensor_loc_input.text)
         CalibrationModule.CalibrationSetupPopup(self.arduino, int(self.ids.channel_num_input.text)).open()
         self.ids.channel_num_input.text = ''
-        self.ids.sensor_name_input.text = ''
+        # self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
         keys = ToggleButtonBehavior.get_widgets('keys')
@@ -225,7 +232,7 @@ class AddSensorPopup(Popup):
 
     def cancel_adding_sensor(self):
         self.ids.channel_num_input.text = ''
-        self.ids.sensor_name_input.text = ''
+        # self.ids.sensor_name_input.text = ''
         self.ids.sensor_loc_input.text = ''
         self.ids.but_mapping_input.text = ''
         keys = ToggleButtonBehavior.get_widgets('keys')
@@ -234,7 +241,10 @@ class AddSensorPopup(Popup):
         self.dismiss()
 
     def check_for_missing_fields(self):
-        if not self.ids.channel_num_input.text or not self.ids.sensor_name_input.text or not self.ids.sensor_loc_input.text:
+        # if not self.ids.channel_num_input.text or not self.ids.sensor_name_input.text or not self.ids.sensor_loc_input.text:
+        #     return False
+
+        if not self.ids.channel_num_input.text or not self.ids.sensor_loc_input.text:
             return False
 
         has_but = False
